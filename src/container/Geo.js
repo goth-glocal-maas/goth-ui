@@ -15,6 +15,10 @@ import { loggedIn } from '../reducers/auth'
 // import FloatPane from '../components/FloatPane'
 import store from '../store'
 
+import ContextMenu from '../components/ContextMenu'
+import Routing from '../components/Routing'
+import { MAPBOX_URL } from '../constants/Api'
+
 
 const FullPageBox = styled.div`
 height: 100%;
@@ -39,18 +43,6 @@ bottom: 150px;
 z-index: 30;
 background: #ffffffaa;
 `
-
-const EleOverMap = styled.div`
-z-index: 30;
-position: fixed;
-background: #fdddfebb;
-width: 40px
-height: 40px;
-left: ${props => props.left ? props.left : 0}px;
-top: ${props => props.top ? props.top : 0}px;
-display: ${props => props.visible ? 'block' : 'none'}
-`
-
 
 const stopIcon = L.divIcon({
   className: 'divIcon',
@@ -82,7 +74,8 @@ class Geo extends Component {
   state = {
     top: 0,
     left: 0,
-    visible: false
+    visible: false,
+    coords: [],
   }
   // constructor(props) {
   //   super(props)
@@ -235,7 +228,6 @@ class Geo extends Component {
         opacity={1}
         className='my-location-marker' />
     ) : null
-
     return (
       <FullPageBox>
         {/* <Nav loggedIn={loggedIn} />
@@ -245,11 +237,14 @@ class Geo extends Component {
             <i className="far fa-dot-circle"></i>
           </FollowMyLocation>
         </a>}
-        <EleOverMap top={this.state.top} left={this.state.left} visible={this.state.visible}>
-          <i className="far fa-dot-circle"></i>
-        </EleOverMap>
+        <ContextMenu
+          top={this.state.top}
+          left={this.state.left}
+          visible={this.state.visible}
+          coords={this.state.coords} />
         <Map
           center={this.state.mapCenter}
+          key="map"
           zoom={geo.zoom}
           length={4}
           zoomControl={false}
@@ -260,7 +255,8 @@ class Geo extends Component {
             this.setState({
               top: e.containerPoint.y,
               left: e.containerPoint.x,
-              visible: true
+              visible: true,
+              coords: [e.latlng.lng, e.latlng.lat],
             })
           }}
           style={{flex: 1}}
@@ -274,10 +270,11 @@ class Geo extends Component {
           }}
           ref='map'>
           <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
             // url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-            url='https://api.tiles.mapbox.com/v4/sipp11.p4efho4p/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2lwcDExIiwiYSI6ImNpa2hzbGpzcDAyYWl0eWo3azhkaHR3aWIifQ.cc4CGgGKkpP_8XVa2BUwtQ'
+            url={MAPBOX_URL}
           />
+          <Routing map={this.refs.map} />
           <ZoomControl position="topright" />
           {myLocationMarker}
           <span>
