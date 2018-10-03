@@ -49,14 +49,14 @@ class Routing extends Component {
       })
 
       this.props.map.leafletElement.addControl(this.routing)
-      // L.DomEvent.on(this.props.map.leafletElement, 'click', this.createPopupsHandler)
+      L.DomEvent.on(this.props.map.leafletElement, 'click', this.createPopupsHandler)
     }
   }
 
   destroyRouting() {
     if (this.props.map) {
       this.props.map.leafletElement.removeControl(this.routing)
-      // L.DomEvent.off(this.props.map.leafletElement, 'click', this.createPopupsHandler)
+      L.DomEvent.off(this.props.map.leafletElement, 'click', this.createPopupsHandler)
     }
   }
 
