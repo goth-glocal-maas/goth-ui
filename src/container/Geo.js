@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 // import { Redirect, Route, Switch } from 'react-router-dom'
 import {
-  Map, TileLayer, CircleMarker, ZoomControl,
+  Map, TileLayer, CircleMarker, ZoomControl, ScaleControl,
   FeatureGroup, GeoJSON, Marker } from 'react-leaflet'
 // import { EditControl } from 'react-leaflet-draw'
 import * as L from 'leaflet'
@@ -13,10 +13,10 @@ import {
 } from '../actions'
 import { loggedIn } from '../reducers/auth'
 // import FloatPane from '../components/FloatPane'
+import ODInput from '../components/ODInput'
 import store from '../store'
 
-import ContextMenu from '../components/ContextMenu'
-import Routing from '../components/Routing'
+import ContextMenu from '../components/map/ContextMenu'
 import { MAPBOX_URL } from '../constants/Api'
 
 
@@ -30,7 +30,7 @@ flex-direction: column;
 `
 
 const FollowMyLocation = styled.div`
-width: 40px
+width: 40px;
 height: 40px;
 background: #fefefebb;
 border-radius: 10px;
@@ -42,6 +42,14 @@ right: 0;
 bottom: 150px;
 z-index: 30;
 background: #ffffffaa;
+`
+
+const OD = styled.div`
+background: transparent;
+z-index: 30;
+position: fixed;
+top: 0;
+width: 100%;
 `
 
 const stopIcon = L.divIcon({
@@ -77,9 +85,11 @@ class Geo extends Component {
     visible: false,
     coords: [],
   }
-  // constructor(props) {
-  //   super(props)
-  // }
+
+  constructor() {
+    super()
+    this.handleContextMenuVisibility = this.handleContextMenuVisibility.bind(this)
+  }
 
   componentWillMount() {
     this.setState({ mapCenter: this.props.geo.mapCenter })
@@ -214,6 +224,11 @@ class Geo extends Component {
     console.log('tap on menucontext menuitem', e, data)
   }
 
+  handleContextMenuVisibility(visible) {
+    const _v = visible || !this.state.visible
+    this.setState({visible: _v})
+  }
+
   render() {
     const { loggedIn, geo } = this.props
     const myLocationMarker = geo.coords ? (
@@ -237,11 +252,15 @@ class Geo extends Component {
             <i className="far fa-dot-circle"></i>
           </FollowMyLocation>
         </a>}
+        <OD>
+          <ODInput />
+        </OD>
         <ContextMenu
           top={this.state.top}
           left={this.state.left}
           visible={this.state.visible}
-          coords={this.state.coords} />
+          coords={this.state.coords}
+          changeVisibility={this.handleContextMenuVisibility} />
         <Map
           center={this.state.mapCenter}
           key="map"
@@ -274,8 +293,12 @@ class Geo extends Component {
             // url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
             url={MAPBOX_URL}
           />
-          <Routing map={this.refs.map} />
-          <ZoomControl position="topright" />
+          <ScaleControl
+            maxWidth={200}
+            position="bottomright"
+            metric={true}
+            imperial={false} />
+          {/* <ZoomControl position="topright" /> */}
           {myLocationMarker}
           <span>
           </span>

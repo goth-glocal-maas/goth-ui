@@ -10,18 +10,25 @@ import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import store from './store'
 
+import ApolloClient from "apollo-boost"
 import { ApolloProvider } from 'react-apollo'
-import { ApolloClient } from 'apollo-client'
-import { HttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+// import { InMemoryCache } from 'apollo-cache-inmemory'
+// import { withClientState } from 'apollo-link-state'
+
+import { defaults, resolvers } from './resolvers'
 
 import { GRAPHQL_URI } from './constants/Api'
 
-const httpLink = new HttpLink({ uri: GRAPHQL_URI })
 
-const client = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache()
+// const cache = new InMemoryCache();
+// const stateLink = withClientState({ cache, resolvers, defaults });
+
+export const client = new ApolloClient({
+  uri: GRAPHQL_URI,
+  clientState: {
+    defaults,
+    resolvers,
+  }
 })
 
 const persistor = persistStore(store)
