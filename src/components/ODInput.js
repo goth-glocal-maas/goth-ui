@@ -35,19 +35,23 @@ class ODInput extends Component {
     return (
       <Fragment>
         <Query query={allDestinationInfo}>
-            {({ loading, error, data: { destinationInfo } }) => {
-              if (error) return <h1>Error...</h1>;
-              if (loading || !destinationInfo) return <h1>Loading...</h1>;
-              const { destination, destinationLabel } = destinationInfo
-              return (
-                <Fragment>
-                  <ODSearchBox
-                    label="destination"
-                    value={destination}
-                    valueLabel={destinationLabel} />
-                </Fragment>
-              )
-            }}
+          {({ loading, error, data: { destinationInfo } }) => {
+            if (error) return <h1>Error...</h1>;
+            if (loading || !destinationInfo) return <h1>Loading...</h1>;
+            const { origin, originLabel, destination, destinationLabel } = destinationInfo
+            return (
+              <Fragment>
+                <ODSearchBox
+                  label="Origin"
+                  value={origin}
+                  valueLabel={originLabel} />
+                <ODSearchBox
+                  label="Destination"
+                  value={destination}
+                  valueLabel={destinationLabel} />
+              </Fragment>
+            )
+          }}
 
         </Query>
 

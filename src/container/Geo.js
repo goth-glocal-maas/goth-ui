@@ -280,7 +280,7 @@ class Geo extends Component {
           }}
           style={{flex: 1}}
           onMovestart={(e) => {
-            this.setState({visible: false})
+            // this.setState({visible: false})
           }}
           onMoveend={(e) => {
             const lc = e.target.getCenter()

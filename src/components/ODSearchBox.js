@@ -4,13 +4,14 @@ import match from 'autosuggest-highlight/match'
 import parse from 'autosuggest-highlight/parse'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
+import _ from 'lodash'
 
 const theme = {
   container: {
     position: 'relative',
     display: 'inline-block',
     fontSize: '1.6rem',
-    margin: '1rem',
+    margin: '0.5rem 1rem 0',
     /* max-width: 400px, */
     width: 'calc(100% - 4rem)',
     verticalAlign: 'top',
@@ -32,7 +33,6 @@ const theme = {
     background: '#f0f0f0',
     color: '#aaa',
     fontWeight: 'bold',
-    // font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     padding: '0.85rem 1.5rem',
     width: '100%',
     borderRadius: '2rem',
@@ -178,27 +178,33 @@ export default class ODSearchBox extends Component {
   };
 
   componentWillMount() {
-    console.log('will mount: ', this.props.value, this.state.value)
+    if (_.isString(this.props.value)) {
+      console.log('will mount')
+      this.setState({ value: this.props.value.reverse().join(',') })
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.value, this.state.value)
-    // if (nextProps.value !== this.state.value) {
-    //   this.setState({value: nextProps.value})
-    // }
+    const nextValue = _.isArray(nextProps.value)
+      ? nextProps.value.reverse().join(',')
+      : nextProps.value
+    if ((nextProps.value !== this.props.value) && _.isString(nextValue) &&
+      (nextValue !== this.state.value)) {
+      this.setState({ value: nextValue })
+    }
   }
 
   render() {
-    const { value, suggestions } = this.state;
+    const { value, suggestions } = this.state
+    const { label } = this.props
 
-    console.log('box props: ', this.props)
     return (
       <Mutation
         mutation={UPDATE_NETWORK_STATUS}
         variables={{ isConnected: !this.props.value }}>
         {(updateNetworkStatus, { loading, error }) => {
           return <Autosuggest
-            id="destination"
+            id={`autosuggest-${label}`}
             theme={theme}
             suggestions={suggestions}
             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -206,7 +212,7 @@ export default class ODSearchBox extends Component {
             getSuggestionValue={getSuggestionValue}
             renderSuggestion={renderSuggestion}
             inputProps={{
-              placeholder: "Type 'c'",
+              placeholder: label,
               value,
               onChange: async (event, { newValue }) => {
                 await updateNetworkStatus()
