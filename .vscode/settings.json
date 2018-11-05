@@ -4,5 +4,6 @@
     "todo-tree.expanded": true,
     "workbench.colorCustomizations": {
       "titleBar.activeBackground": "#332954"
-    }
+    },
+    "prettier.semi": false
   }

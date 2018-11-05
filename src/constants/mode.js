@@ -1,0 +1,3 @@
+export const TRANSPORT_MODES = [
+  'TRANSIT,WALK', 'WALK', 'BICYCLE', 'CAR', 'TRANSIT,BICYCLE'
+]

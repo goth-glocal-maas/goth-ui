@@ -11,8 +11,7 @@ const theme = {
     position: 'relative',
     display: 'inline-block',
     fontSize: '1.6rem',
-    margin: '0.5rem 1rem 0',
-    /* max-width: 400px, */
+    margin: '1rem 0.5rem 0.5rem 0rem',
     width: 'calc(100% - 4rem)',
     verticalAlign: 'top',
 
@@ -21,7 +20,7 @@ const theme = {
     background: 'transparent',
     border: 0,
     color: 'transparent',
-    boxShadow: 'none',
+    boxShadow: '1.5px 2.6px 10px 0 rgba(0,0,0,.2)',
   },
   input: {
     position: 'relative',
@@ -178,9 +177,11 @@ export default class ODSearchBox extends Component {
   };
 
   componentWillMount() {
-    if (_.isString(this.props.value)) {
-      console.log('will mount')
-      this.setState({ value: this.props.value.reverse().join(',') })
+    const v = this.props.value
+    if (_.isString(v)) {
+      this.setState({ value: v })
+    } else if (_.isArray(v)) {
+      this.setState({ value: v.reverse().join(',') })
     }
   }
 

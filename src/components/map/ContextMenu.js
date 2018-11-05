@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import gql from 'graphql-tag';
-import { graphql, compose } from 'react-apollo';
+import gql from 'graphql-tag'
+import { graphql, compose } from 'react-apollo'
 
 
 const StyledUL = styled.ul`
-z-index: 30;
+z-index: 2000;
 position: fixed;
 left: ${props => props.left ? props.left : 0}px;
 top: ${props => props.top ? props.top : 0}px;

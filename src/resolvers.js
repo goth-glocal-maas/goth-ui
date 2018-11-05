@@ -19,6 +19,10 @@ export const resolvers = {
       }
       cache.writeData({ data })
       return null
+    },
+    swapOD: (_, {origin, destination}, { cache }) => {
+      console.log('mutate cache', cache)
+      return null
     }
   }
 }

@@ -6,8 +6,8 @@ const initialState = {
   timestamp: 0,
   coords: null,
   message: '',
-  lastCenter: [13.84626739, 100.538],
-  mapCenter: [13.84626739, 100.538],
+  lastCenter: [7.88523230, 98.3808517],
+  mapCenter: [7.88523230, 98.3808517],
   zoom: 13,
 }
 
