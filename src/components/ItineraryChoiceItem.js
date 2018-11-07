@@ -16,16 +16,26 @@ const One = styled.div`
   flex: 1;
 `
 
-const Min = styled.span`
-float: right;
-font-size: 1.2rem
-color: #444;
-line-height: 1rem;
+const MinUnit = styled.span`
+  float: right;
+  font-size: 1.2rem
+  color: #444;
+  line-height: 1rem;
+`
+
+const MinBig = styled.span`
+  font-size: 4rem;
+`
+
+const MinBox = styled.div`
+  width: 6rem;
 `
 
 export default class ItineraryChoiceItem extends Component {
   renderLegMode(legs) {
-    const modes = Object.keys(legs).map(i => <ModeIcon mode={legs[i].mode} />)
+    const modes = Object.keys(legs).map(i => (
+      <ModeIcon mode={legs[i].mode} key={`leg-icon-${i}`} />
+    ))
     // let ms = modes.join(<FontAwesomeIcon icon="ellipsis-h" />)
     return <Fragment>{modes}</Fragment>
   }
@@ -41,10 +51,10 @@ export default class ItineraryChoiceItem extends Component {
           <br />
           {transfers > 0 && `Transfer: ${transfers}`}
         </One>
-        <div style={{ width: "5rem" }}>
-          <Min>min</Min>
-          <span style={{ fontSize: '4rem' }}>{durationMin.toFixed()}</span>
-        </div>
+        <MinBox>
+          <MinUnit>min</MinUnit>
+          <MinBig>{durationMin.toFixed()}</MinBig>
+        </MinBox>
       </Container>
     )
   }

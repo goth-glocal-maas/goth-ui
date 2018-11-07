@@ -2,12 +2,13 @@ import gql from 'graphql-tag'
 
 
 export const ROUTEPLAN_QUERY = gql`
-query ROUTEPLAN_QUERY($from: String!, $to: String!, $date: String!, $time: String!) {
+query ROUTEPLAN_QUERY($from: String!, $to: String!, $date: String!, $time: String!, $mode: String) {
   route_plan(
     from: $from
     to: $to
     date: $date
     time: $time
+    mode: $mode
   ) {
     itineraries {
       startTime
@@ -38,6 +39,7 @@ query ROUTEPLAN_QUERY($from: String!, $to: String!, $date: String!, $time: Strin
         routeType
         route
         routeColor
+        routeTextColor
         realTime
         legGeometry {
           points

@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react"
-import { connect } from "react-redux"
 import styled from "styled-components"
 import _ from "lodash"
 import {
@@ -15,24 +14,18 @@ import {
 // import { EditControl } from 'react-leaflet-draw'
 import * as L from "leaflet"
 import gql from "graphql-tag"
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch } from "react-router-dom"
 import { graphql, compose, Query } from "react-apollo"
 
-import {
-  geoLocationFailed,
-  geoLocationUpdate,
-  lastCenterUpdate
-} from "../actions"
-import { loggedIn } from "../reducers/auth"
 // import FloatPane from '../components/FloatPane'
 import ODInput from "../components/ODInput"
-import store from "../store"
+// import store from "../store"
 
 import ContextMenu from "../components/map/ContextMenu"
 import { MAPBOX_URL } from "../constants/Api"
 import ItineraryPicker from "../components/ItineraryPicker"
 import ItineraryPlan from "../components/ItineraryPlan"
-
+import PlanPolygonOverlay from "../components/map/PlanPolygonOverlay"
 
 const FullPageBox = styled.div`
   height: 100%;
@@ -107,7 +100,9 @@ class Geo extends Component {
     left: 0,
     visible: false,
     itineraryPickerVisible: false,
-    coords: []
+    coords: [],
+    mapCenter: [7.8852323, 98.3808517],
+    position: {}
   }
 
   constructor() {
@@ -119,7 +114,7 @@ class Geo extends Component {
   }
 
   componentWillMount() {
-    this.setState({ mapCenter: this.props.geo.mapCenter })
+    // this.setState({ mapCenter: this.props.geo.mapCenter })
   }
 
   componentWillUnmount() {
@@ -134,28 +129,31 @@ class Geo extends Component {
         // failure(dispatch(locationError(failureMsg)))
       }
     } */
-    navigator.geolocation.getCurrentPosition(
-      position => store.dispatch(geoLocationUpdate(position)),
-      error => store.dispatch(geoLocationFailed(error)),
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
-    )
+    // navigator.geolocation.getCurrentPosition(
+    //   position => store.dispatch(geoLocationUpdate(position)),
+    //   error => store.dispatch(geoLocationFailed(error)),
+    //   { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
+    // )
     this.watchID = navigator.geolocation.watchPosition(
-      position => store.dispatch(geoLocationUpdate(position)),
-      error => store.dispatch(geoLocationFailed(error))
+      position => {
+        this.setState({ position })
+      },
+      error => {
+        console.error("err: ", error)
+      } //store.dispatch(geoLocationFailed(error))
     )
   }
 
   componentWillReceiveProps(newProps) {
-    const omCenter = this.props.geo.mapCenter
-    const newCenter = newProps.geo.mapCenter
-    let center = {
-      lastCenter: newProps.geo.lastCenter
-    }
-    if (omCenter[0] !== newCenter[0] || omCenter[1] !== newCenter[1]) {
-      center.mapCenter = newCenter
-    }
-
-    this.setState({ ...center })
+    // const omCenter = this.props.geo.mapCenter
+    // const newCenter = newProps.geo.mapCenter
+    // let center = {
+    //   lastCenter: newProps.geo.lastCenter
+    // }
+    // if (omCenter[0] !== newCenter[0] || omCenter[1] !== newCenter[1]) {
+    //   center.mapCenter = newCenter
+    // }
+    // this.setState({ ...center })
   }
 
   forceSetMapCenterToCurrent() {
@@ -171,7 +169,7 @@ class Geo extends Component {
   }
 
   handleContextMenuVisibility(visible) {
-    console.log('context menu', this.props)
+    console.log("context menu", this.props)
     const _v = visible || !this.state.visible
     this.setState({ visible: _v })
   }
@@ -182,43 +180,47 @@ class Geo extends Component {
 
   render() {
     const { itineraryPickerVisible } = this.state
-    const { loggedIn, geo } = this.props
+    // const { loggedIn, geo } = this.props
     const { destinationInfo } = this.props.allDestinationInfo
     const { destination, origin } = destinationInfo
-    const myLocationMarker = geo.coords ? (
-      <CircleMarker
-        center={[geo.coords.latitude, geo.coords.longitude]}
-        radius={8}
-        fillColor={"rgb(33, 150, 243)"}
-        fillOpacity={0.9}
-        color={"white"}
-        stroke
-        weight={2}
-        opacity={1}
-        className="my-location-marker"
-      />
-    ) : null
+    // const myLocationMarker = geo.coords ? (
+    //   <CircleMarker
+    //     center={[geo.coords.latitude, geo.coords.longitude]}
+    //     radius={8}
+    //     fillColor={"rgb(33, 150, 243)"}
+    //     fillOpacity={0.9}
+    //     color={"white"}
+    //     stroke
+    //     weight={2}
+    //     opacity={1}
+    //     className="my-location-marker"
+    //   />
+    // ) : null
 
     return (
       <FullPageBox>
         {/* <Nav loggedIn={loggedIn} />
         <FloatPane loggedIn={loggedIn} {...this.props} />*/}
-        {geo.coords && (
+        {/* {geo.coords && (
           <a onClick={this.forceSetMapCenterToCurrent.bind(this)}>
             <FollowMyLocation>
               <i className="far fa-dot-circle" />
             </FollowMyLocation>
           </a>
-        )}
+        )} */}
         <Switch>
-          <Route path={`/p/:from/:to`} render={props => (
-            <ItineraryPicker {...props} />
-          )} />
-          <Route path="/" render={props => (
-            <OD>
-              <ODInput {...destinationInfo} />
-            </OD>
-          )} />
+          <Route
+            path={`/p/:from/:to`}
+            render={props => <ItineraryPicker {...props} />}
+          />
+          <Route
+            path="/"
+            render={props => (
+              <OD>
+                <ODInput {...destinationInfo} />
+              </OD>
+            )}
+          />
         </Switch>
         <ContextMenu
           top={this.state.top}
@@ -230,13 +232,13 @@ class Geo extends Component {
         <Map
           center={this.state.mapCenter}
           key="map"
-          zoom={geo.zoom}
+          zoom={13}
           length={4}
           zoomControl={false}
           animate
           tap={true}
           onContextMenu={e => {
-            if (this.props.location.pathname === '/') {
+            if (this.props.location.pathname === "/") {
               this.setState({
                 top: e.containerPoint.y,
                 left: e.containerPoint.x,
@@ -256,10 +258,10 @@ class Geo extends Component {
           }}
           ref="map"
         >
-          <ItineraryPlan />
-          <span style={{ zIndex: 15 }} >
+          <PlanPolygonOverlay />
+          <span style={{ zIndex: 15 }}>
             <TileLayer
-              attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a>"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
               // url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
               url={MAPBOX_URL}
             />
@@ -271,23 +273,15 @@ class Geo extends Component {
             />
           </span>
           {/* <ZoomControl position="topright" /> */}
-          {myLocationMarker}
+          {/* {myLocationMarker} */}
         </Map>
       </FullPageBox>
     )
   }
 }
 
-const mapStateToProps = state => ({
-  loggedIn: loggedIn(state.auth),
-  geo: state.geo
-})
-
 const gqGeo = compose(
   graphql(allDestinationInfo, { name: "allDestinationInfo" })
 )(Geo)
 
-export default connect(
-  mapStateToProps,
-  {}
-)(gqGeo)
+export default gqGeo
