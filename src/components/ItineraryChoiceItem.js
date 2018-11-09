@@ -1,14 +1,18 @@
 import React, { Component, Fragment } from "react"
 import styled from "styled-components"
+import { Subscribe } from 'unstated'
 import ModeIcon from "./parts/ModeIcon"
+import PlanContainer from '../unstated/plan'
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const Container = styled.div`
-  background: #fff;
+  background: ${props => (props.isPicked ? '#c5ff93' : '#fff')};
+  transition: background-color 200ms linear;
   border-radius: 1rem;
   padding: 1rem 2rem;
   margin: 0.5rem;
-
+  visibility: visible;
   display: flex;
 `
 
@@ -32,6 +36,7 @@ const MinBox = styled.div`
 `
 
 export default class ItineraryChoiceItem extends Component {
+
   renderLegMode(legs) {
     const modes = Object.keys(legs).map(i => (
       <ModeIcon mode={legs[i].mode} key={`leg-icon-${i}`} />
@@ -41,21 +46,28 @@ export default class ItineraryChoiceItem extends Component {
   }
 
   render() {
-    const { startTime, endTime, legs, transfers } = this.props
+    const { index, startTime, endTime, legs, transfers } = this.props
     const duration = endTime - startTime
     const durationMin = duration / 1000 / 60
     return (
-      <Container>
-        <One>
-          {this.renderLegMode(legs)}
-          <br />
-          {transfers > 0 && `Transfer: ${transfers}`}
-        </One>
-        <MinBox>
-          <MinUnit>min</MinUnit>
-          <MinBig>{durationMin.toFixed()}</MinBig>
-        </MinBox>
-      </Container>
+      <Subscribe to={[PlanContainer]}>
+        {plan => (
+          <Container
+            onClick={() => plan.setPickedItinerary(+index)}
+            isPicked={(index == +plan.state.picked)}
+          >
+            <One>
+              {this.renderLegMode(legs)}
+              <br />
+              {transfers > 0 && `Transfer: ${transfers}`}
+            </One>
+            <MinBox>
+              <MinUnit>min</MinUnit>
+              <MinBig>{durationMin.toFixed()}</MinBig>
+            </MinBox>
+          </Container>
+        )}
+      </Subscribe>
     )
   }
 }

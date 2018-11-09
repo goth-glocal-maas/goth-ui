@@ -17,7 +17,10 @@ class PlanContainer extends Container {
   }
 
   setPickedItinerary = (index) => {
-    this.setState({ picked: index })
+    // set new hash to force re-render PlanPolygonOverlay
+    const { hash } = this.state
+    const h = hash.split('P')[0]
+    this.setState({ picked: index, hash: `${h}P${index}` })
   }
 
   setItineraries = (items) => {

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
 import { getToken, loggedIn } from '../reducers/auth'
 import { fetchAuth } from '../actions'
 import LinkList from '../components/LinkList'
@@ -23,11 +22,4 @@ const Gone = (props) => (
   </div>
 )
 
-
-const mapStateToProps = state => ({
-  token: getToken(state.auth),
-  loggedIn: loggedIn(state.auth),
-})
-export default connect(
-  mapStateToProps
-)(Gone)
+export default Gone
