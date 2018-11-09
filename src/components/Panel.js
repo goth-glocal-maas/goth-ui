@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 import styled from "styled-components"
-import { yellow, grayBackground } from '../constants/color'
+import { yellow, grayBackground } from "../constants/color"
 
 const Box = styled.div`
   width: 100%
@@ -9,7 +9,7 @@ const Box = styled.div`
 
   position: fixed;
   left: 0;
-  top: 0;
+  top: 30px;
   z-index: 3;  // mapbox logo on z-index 2
 
   // margin: 0.5rem;
@@ -21,18 +21,18 @@ const Box = styled.div`
 `
 
 const BoxTitle = styled.div`
-width: 100%;
-background: ${yellow};
+  width: 100%;
+  background: ${yellow};
 
-padding: 0.5rem 1rem;
-font-size: 2rem;
+  padding: 0.5rem 1rem;
+  font-size: 2rem;
 `
 
 const BoxContent = styled.div`
-padding: 1rem;
-background: ${grayBackground};
+  padding: 1rem;
+  background: ${grayBackground};
 
-overflow-y: scroll;
+  overflow-y: scroll;
 `
 
 export default class Panel extends Component {

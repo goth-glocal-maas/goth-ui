@@ -1,13 +1,11 @@
 import React, { Component, Fragment } from "react"
 import styled from "styled-components"
-import { Subscribe } from 'unstated'
+import { Subscribe } from "unstated"
 import ModeIcon from "./parts/ModeIcon"
-import PlanContainer from '../unstated/plan'
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import PlanContainer from "../unstated/plan"
 
 const Container = styled.div`
-  background: ${props => (props.isPicked ? '#c5ff93' : '#fff')};
+  background: ${props => (props.isPicked ? "#c5ff93" : "#fff")};
   transition: background-color 200ms linear;
   border-radius: 1rem;
   padding: 1rem 2rem;
@@ -36,12 +34,10 @@ const MinBox = styled.div`
 `
 
 export default class ItineraryChoiceItem extends Component {
-
   renderLegMode(legs) {
     const modes = Object.keys(legs).map(i => (
       <ModeIcon mode={legs[i].mode} key={`leg-icon-${i}`} />
     ))
-    // let ms = modes.join(<FontAwesomeIcon icon="ellipsis-h" />)
     return <Fragment>{modes}</Fragment>
   }
 
@@ -54,7 +50,7 @@ export default class ItineraryChoiceItem extends Component {
         {plan => (
           <Container
             onClick={() => plan.setPickedItinerary(+index)}
-            isPicked={(index == +plan.state.picked)}
+            isPicked={index == +plan.state.picked}
           >
             <One>
               {this.renderLegMode(legs)}
