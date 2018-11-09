@@ -19,6 +19,7 @@ import {
 
 import Header from "./container/Header"
 import Geo from "./container/Geo"
+import Map from "./container/Map"
 import Gone from "./container/Gone"
 
 library.add(faWalking)
@@ -38,7 +39,8 @@ const App = () => (
   <div>
     {/* <Header /> */}
     <Switch>
-      <Route path="/" component={Geo} />
+      <Route path="/" component={Map} />
+      <Route path="/old" component={Geo} />
       {/* both /roster and /roster/:number begin with /roster */}
       {/* <Route path="/roster/:id" component={Gone} /> */}
     </Switch>
