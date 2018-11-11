@@ -14,7 +14,7 @@ import {
   faEllipsisH,
   faSync,
   faPlayCircle,
-  faCog,
+  faCog
 } from "@fortawesome/free-solid-svg-icons"
 
 import Header from "./container/Header"
@@ -39,8 +39,8 @@ const App = () => (
   <div>
     {/* <Header /> */}
     <Switch>
-      <Route path="/" component={Map} />
       <Route path="/old" component={Geo} />
+      <Route path="/" component={Map} />
       {/* both /roster and /roster/:number begin with /roster */}
       {/* <Route path="/roster/:id" component={Gone} /> */}
     </Switch>

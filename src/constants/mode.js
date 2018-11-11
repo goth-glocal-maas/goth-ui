@@ -6,6 +6,33 @@ export const TRANSPORT_MODES = [
   "CAR"
 ]
 
+export const MODE_GL_STYLES = {
+  WALK: {
+    stroke: "#a63eff",
+    strokeWidth: 5,
+    opacity: 0.65,
+    strokeDasharray: "12 8"
+  },
+  BICYCLE: {
+    stroke: "#ff7473",
+    strokeWidth: 5,
+    opacity: 0.65,
+    strokeDasharray: "8 8"
+  },
+  CAR: {
+    stroke: "#fa853e",
+    strokeWidth: 6,
+    opacity: 0.65,
+    strokeDasharray: "0"
+  },
+  BUS: {
+    stroke: "#1952e2",
+    strokeWidth: 6,
+    opacity: 0.65,
+    strokeDasharray: "0"
+  }
+}
+
 export const MODE_STYLES = {
   WALK: {
     color: "#a63eff",

@@ -20,6 +20,7 @@ import { graphql, compose, Query } from "react-apollo"
 // import FloatPane from '../components/FloatPane'
 import ODInput from "../components/ODInput"
 // import store from "../store"
+import "leaflet/dist/leaflet.css"
 
 import ContextMenu from "../components/map/ContextMenu"
 import { MAPBOX_URL } from "../constants/Api"
