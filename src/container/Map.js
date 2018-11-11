@@ -78,6 +78,7 @@ class Map extends Component {
   }
 
   componentDidMount() {
+    // Start getting base MapStyle from our provider
     axios
       .get(process.env.REACT_APP_MAPGL_MAPSTYLE)
       .then(resp => {
@@ -89,8 +90,11 @@ class Map extends Component {
       })
   }
 
-  _renderRoute(points, index, leg) {
+  _renderLeg(points, index, leg) {
+    /* render each leg of our itinerary
+    TODO: need to change color or opacity for unpicked leg
     // onClick={() => windowAlert(`route ${index}`)}
+    */
     let style = {
       ...BASE_STYLE,
       ...(MODE_GL_STYLES[leg.mode] || {})
@@ -109,6 +113,7 @@ class Map extends Component {
   }
 
   _redrawItinerary(project, itinerary, index) {
+    // loop through every leg of this itinerary
     const { legs } = itinerary
     return (
       <g>
@@ -119,7 +124,7 @@ class Map extends Component {
             .map(project)
             .map(p => [round(p[0], 1), round(p[1], 1)])
           return (
-            <g key={legIndex}>{this._renderRoute(points, legIndex, leg)}</g>
+            <g key={legIndex}>{this._renderLeg(points, legIndex, leg)}</g>
           )
         })}
       </g>
@@ -127,6 +132,7 @@ class Map extends Component {
   }
 
   _redrawSVGOverlay({ project }) {
+    // Take all itineraries and start drawing leg
     const { itineraries } = ROUTES.data.route_plan
     return (
       <g>
@@ -138,6 +144,7 @@ class Map extends Component {
   }
 
   _redrawCanvasOverlay({ ctx, width, height, project }) {
+    // TODO: implement this
     ctx.clearRect(0, 0, width, height)
     const dd =
       "qdkwQwgeo@\\BpA~OyDbKgEdKkFgKX{KxDms@Z}SeW{EwAYuAHqDg@kEDkDc@wD?iECkDfAp@~J@fHyApD_HtAsF|AkKlKqDjHiLxYY`MeW}Ai@tH`K|BpYrFzDf@b`@zCtUfCwe@vMcD`DwMEq@dF}BhHuE~DoJiJOiETk@]c@OsAqP^eY~@MmCaA?aBt@wCP?tBfSu@dArO?~CqCbK{BnIs@|`@w@zFyJ|E}EhDkDlHiI~GjF~@vDiBlEv@`MeFj@fA~EwBdAsAxGcRkEC"
