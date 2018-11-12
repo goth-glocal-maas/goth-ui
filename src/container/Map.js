@@ -18,7 +18,7 @@ import PlanContainer from "../unstated/plan"
 
 import Panel from "../components/Panel"
 import MMarker from "../components/map/Marker"
-import Popup from "../components/map/Popup"
+import TapToMap from "../components/map/TapToMap"
 import { MODE_GL_STYLES } from "../constants/mode"
 
 import alphaify from "../utils/alphaify"
@@ -66,7 +66,8 @@ class Map extends Component {
       // transitionInterpolator: new LinearInterpolator({
       //   around: [event.offsetCenter.x, event.offsetCenter.y]
       // }),
-      transitionDuration: 200
+      transitionDuration: 200,
+      tapLocation: []
     },
     defaultMapStyle: null,
     mapStyle: null
@@ -182,8 +183,16 @@ class Map extends Component {
 
   _onViewportChange = viewport => this.setState({ viewport })
 
+  _onClick = ({ lngLat }) => {
+    this.setState({ tapLocation: lngLat })
+  }
+
+  _onTapToMapCloseClick() {
+    this.setState({ tapLocation: [] })
+  }
+
   render() {
-    const { mapStyle } = this.state
+    const { mapStyle, tapLocation } = this.state
     const { itineraries } = ROUTES.data.route_plan
     const { legs } = itineraries[0]
     const coords = [
@@ -204,6 +213,7 @@ class Map extends Component {
                 reuseMaps={true}
                 width="100%"
                 height="100%"
+                onClick={this._onClick}
               >
                 <SVGOverlay redraw={this._redrawSVGOverlay} />
                 <CanvasOverlay redraw={this._redrawCanvasOverlay} />
@@ -232,7 +242,13 @@ class Map extends Component {
                     lat={coords[index][1]}
                   />
                 ))}
-                <Popup />
+                <TapToMap
+                  lat={tapLocation && tapLocation[1]}
+                  lon={tapLocation && tapLocation[0]}
+                  onSetFrom={plan.setFrom}
+                  onSetTo={plan.setTo}
+                  onCloseClick={this._onTapToMapCloseClick.bind(this)}
+                />
               </ReactMapGL>
             )}
           </FullPageBox>
