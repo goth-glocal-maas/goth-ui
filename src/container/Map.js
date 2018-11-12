@@ -181,6 +181,13 @@ class Map extends Component {
 
   render() {
     const { mapStyle } = this.state
+    const { itineraries } = ROUTES.data.route_plan
+    const { legs } = itineraries[0]
+    const coords = [
+      [legs[0].from.lon, legs[0].from.lat],
+      [legs[3].to.lon, legs[3].to.lat],
+    ]
+
     return (
       <FullPageBox>
         <Panel />
@@ -196,6 +203,11 @@ class Map extends Component {
             <SVGOverlay redraw={this._redrawSVGOverlay} />
             <CanvasOverlay redraw={this._redrawCanvasOverlay} />
             <MMarker mode="BUS" />
+            {Object.keys(coords)
+              .map(index => <MMarker
+                key={`coords-${index}`} mode="TAXI"
+                color={color(index)}
+                lon={coords[index][0]} lat={coords[index][1]} />)}
             <Popup />
           </ReactMapGL>
         )}
