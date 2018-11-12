@@ -133,6 +133,7 @@ class Map extends Component {
 
   _redrawSVGOverlay({ project }) {
     // Take all itineraries and start drawing leg
+    // TODO: change this to this.state
     const { itineraries } = ROUTES.data.route_plan
     return (
       <g>
@@ -143,20 +144,27 @@ class Map extends Component {
     )
   }
 
+  _redrawDot(ctx, p, i, thisColor) {
+    const point = [round(p[0], 1), round(p[1], 1)]
+    ctx.fillStyle = rgb(thisColor)
+      .brighter(1)
+      .toString()
+    ctx.beginPath()
+    ctx.arc(point[0], point[1], 6, 0, Math.PI * 2)
+    ctx.fill()
+  }
+
   _redrawCanvasOverlay({ ctx, width, height, project }) {
-    // TODO: implement this
+    // TODO: change this to this.state
+    const { itineraries } = ROUTES.data.route_plan
     ctx.clearRect(0, 0, width, height)
-    const dd =
-      "qdkwQwgeo@\\BpA~OyDbKgEdKkFgKX{KxDms@Z}SeW{EwAYuAHqDg@kEDkDc@wD?iECkDfAp@~J@fHyApD_HtAsF|AkKlKqDjHiLxYY`MeW}Ai@tH`K|BpYrFzDf@b`@zCtUfCwe@vMcD`DwMEq@dF}BhHuE~DoJiJOiETk@]c@OsAqP^eY~@MmCaA?aBt@wCP?tBfSu@dArO?~CqCbK{BnIs@|`@w@zFyJ|E}EhDkDlHiI~GjF~@vDiBlEv@`MeFj@fA~EwBdAsAxGcRkEC"
-    const COORDS = polyline.decode(dd)
-    COORDS.map(project).forEach((p, i) => {
-      const point = [round(p[0], 1), round(p[1], 1)]
-      ctx.fillStyle = rgb(color(6))
-        .brighter(1)
-        .toString()
-      ctx.beginPath()
-      ctx.arc(point[0], point[1], 4, 0, Math.PI * 2)
-      ctx.fill()
+    itineraries.map((itinerary, _) => {
+      itinerary.legs.map((leg, index) => {
+        // draw start & end of every legs
+        const se = [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat],]
+        const routeColor = (leg.routeColor) ? `#${leg.routeColor}` : color(6)
+        se.map(project).forEach((p, i) => this._redrawDot(ctx, p, i, routeColor))
+      })
     })
   }
 
