@@ -1,10 +1,7 @@
-import React, { Component, Fragment } from "react"
+import React, { Component } from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Link } from 'react-router-dom'
-
-import gql from 'graphql-tag'
-import { graphql, compose } from 'react-apollo'
+import { Link } from "react-router-dom"
 
 // import "./ODInput.css"
 import ODSearchBox from "./ODSearchBox"
@@ -40,7 +37,7 @@ const ODButton = styled.button`
   padding: 0.3rem;
 
   color: #888;
-  display: ${props => (props.visible ? "block" : 'none')};
+  display: ${props => (props.visible ? "block" : "none")};
 `
 
 const ODLink = styled(Link)`
@@ -56,23 +53,24 @@ const ODLink = styled(Link)`
   padding: 0.3rem;
 
   color: #888;
-  display: ${props => (props.visible ? "block" : 'none')};
+  display: ${props => (props.visible ? "block" : "none")};
 `
 
-const coordsToStr = i => i.reverse().join(',');
-
+const coordsToStr = i => i.reverse().join(",")
 
 class ODInput extends Component {
-
   handleSwitchOD() {
     const { origin, destination } = this.props
-    this.props.swapOD({ variables: { origin: destination, destination: origin } })
+    this.props.swapOD({
+      variables: { origin: destination, destination: origin }
+    })
   }
 
   render() {
     const { origin, originLabel, destination, destinationLabel } = this.props
-    const bothFilled = (origin.length > 0 && destination.length > 0) ? true : false
-    const tsp = (new Date()).getTime()
+    const bothFilled =
+      origin.length > 0 && destination.length > 0 ? true : false
+    const tsp = new Date().getTime()
 
     return (
       <ODBox>
@@ -95,8 +93,11 @@ class ODInput extends Component {
           />
           <ODButtonBox>
             <ODLink
-              to={`/p/${coordsToStr(origin)}/${coordsToStr(destination)}?ts=${tsp}`}
-              visible={bothFilled}>
+              to={`/p/${coordsToStr(origin)}/${coordsToStr(
+                destination
+              )}?ts=${tsp}`}
+              visible={bothFilled}
+            >
               <FontAwesomeIcon icon="play-circle" size="lg" />
             </ODLink>
           </ODButtonBox>

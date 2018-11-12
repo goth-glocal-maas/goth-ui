@@ -54,7 +54,7 @@ const BASE_STYLE = {
   stroke: alphaify(color(6), 0.7),
   strokeWidth: 6,
   strokeDasharray: "5,10,5",
-  strokeLinecap: "round",
+  strokeLinecap: "round"
 }
 
 class Map extends Component {
@@ -126,9 +126,7 @@ class Map extends Component {
           const points = coordinates
             .map(project)
             .map(p => [round(p[0], 1), round(p[1], 1)])
-          return (
-            <g key={legIndex}>{this._renderLeg(points, legIndex, leg)}</g>
-          )
+          return <g key={legIndex}>{this._renderLeg(points, legIndex, leg)}</g>
         })}
       </g>
     )
@@ -164,9 +162,11 @@ class Map extends Component {
     itineraries.map((itinerary, _) => {
       itinerary.legs.map((leg, index) => {
         // draw start & end of every legs
-        const se = [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat],]
-        const routeColor = (leg.routeColor) ? `#${leg.routeColor}` : color(6)
-        se.map(project).forEach((p, i) => this._redrawDot(ctx, p, i, routeColor))
+        const se = [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat]]
+        const routeColor = leg.routeColor ? `#${leg.routeColor}` : color(6)
+        se.map(project).forEach((p, i) =>
+          this._redrawDot(ctx, p, i, routeColor)
+        )
       })
     })
   }
@@ -188,7 +188,7 @@ class Map extends Component {
     const { legs } = itineraries[0]
     const coords = [
       [legs[0].from.lon, legs[0].from.lat],
-      [legs[3].to.lon, legs[3].to.lat],
+      [legs[3].to.lon, legs[3].to.lat]
     ]
 
     return (
@@ -207,13 +207,31 @@ class Map extends Component {
               >
                 <SVGOverlay redraw={this._redrawSVGOverlay} />
                 <CanvasOverlay redraw={this._redrawCanvasOverlay} />
-                {plan.state.from && <MMarker mode="BICYCLE" color={color(7)} lon={plan.state.from[0]} lat={plan.state.from[1]} />}
-                {plan.state.to && <MMarker mode="BICYCLE" color={color(8)} lon={plan.state.to[0]} lat={plan.state.to[1]} />}
-                {Object.keys(coords)
-                  .map(index => <MMarker
-                    key={`coords-${index}`} mode="TAXI"
+                {plan.state.from && (
+                  <MMarker
+                    mode="BICYCLE"
+                    color={color(7)}
+                    lon={plan.state.from[0]}
+                    lat={plan.state.from[1]}
+                  />
+                )}
+                {plan.state.to && (
+                  <MMarker
+                    mode="BICYCLE"
+                    color={color(8)}
+                    lon={plan.state.to[0]}
+                    lat={plan.state.to[1]}
+                  />
+                )}
+                {Object.keys(coords).map(index => (
+                  <MMarker
+                    key={`coords-${index}`}
+                    mode="TAXI"
                     color={color(index)}
-                    lon={coords[index][0]} lat={coords[index][1]} />)}
+                    lon={coords[index][0]}
+                    lat={coords[index][1]}
+                  />
+                ))}
                 <Popup />
               </ReactMapGL>
             )}
