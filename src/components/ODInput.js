@@ -6,13 +6,13 @@ import { Link } from 'react-router-dom'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 
-import "./ODInput.css"
+// import "./ODInput.css"
 import ODSearchBox from "./ODSearchBox"
 
 const ODBox = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0 1rem;
+  padding: 0;
 `
 
 const ODInputBox = styled.div`
@@ -31,12 +31,12 @@ const ODButton = styled.button`
   background: #ffffff;
   border: 0;
   border-radius: 1rem;
-  box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 1.5px 1px 1px 0 rgba(0, 0, 0, 0.2);
 
   width: 3.5rem;
 
   font-size: 1.6rem;
-  margin: 1.4rem 0 0;
+  margin: 0.5rem 0 0;
   padding: 0.3rem;
 
   color: #888;
@@ -47,12 +47,12 @@ const ODLink = styled(Link)`
   background: #ffffff;
   border: 0;
   border-radius: 1rem;
-  box-shadow: 1.5px 2.6px 10px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 1.5px 1px 1px 0 rgba(0, 0, 0, 0.2);
 
   width: 3.5rem;
 
   font-size: 1.6rem;
-  margin: 1.4rem 0 0;
+  margin: 0.5rem 0 0;
   padding: 0.3rem;
 
   color: #888;
@@ -67,10 +67,6 @@ class ODInput extends Component {
   handleSwitchOD() {
     const { origin, destination } = this.props
     this.props.swapOD({ variables: { origin: destination, destination: origin } })
-  }
-
-  handleGettingPlan() {
-
   }
 
   render() {
@@ -107,44 +103,7 @@ class ODInput extends Component {
         </ODInputBox>
       </ODBox>
     )
-    //   <Query query={allDestinationInfo}>
-    //   {({ loading, error, data: { destinationInfo } }) => {
-    //     if (error) return <h1>Error...</h1>;
-    //     if (loading || !destinationInfo) return <h1>Loading...</h1>;
-    //     const { origin, originLabel, destination, destinationLabel } = destinationInfo
-    //     return (
-    //       <Fragment>
-    //         <ODSearchBox
-    //           label="Origin"
-    //           value={origin}
-    //           valueLabel={originLabel} />
-    //         <ODSearchBox
-    //           label="Destination"
-    //           value={destination}
-    //           valueLabel={destinationLabel} />
-    //       </Fragment>
-    //     )
-    //   }}
-
-    // </Query>
-
-    // <Center className="input input--kyo">
-    //   <input className="input__field input__field--kyo" type="text" id="input-19" />
-    //   <label className="input__label input__label--kyo" htmlFor="input-19">
-    //     <span className="input__label-content input__label-content--kyo">Where to?</span>
-    //   </label>
-    // </Center>
   }
 }
 
-const SWAP_OD = gql`
-mutation updateDestinationInfo($origin: [Float], $destination: [Float]) {
-  updateDestinationInfo(origin: $origin, destination: $destination) @client
-}
-`
-
-export default compose(
-  graphql(SWAP_OD, { name: 'swapOD' })
-)(ODInput)
-
-// export default ODInput
+export default ODInput

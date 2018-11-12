@@ -12,6 +12,9 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { scaleOrdinal } from "d3-scale"
 import { schemeCategory10 } from "d3-scale-chromatic"
 import { rgb } from "d3-color"
+import { Subscribe } from "unstated"
+
+import PlanContainer from "../unstated/plan"
 
 import Panel from "../components/Panel"
 import MMarker from "../components/map/Marker"
@@ -189,29 +192,34 @@ class Map extends Component {
     ]
 
     return (
-      <FullPageBox>
-        <Panel />
-        {mapStyle && (
-          <ReactMapGL
-            {...this.state.viewport}
-            onViewportChange={this._onViewportChange}
-            mapStyle={this.state.mapStyle}
-            reuseMaps={true}
-            width="100%"
-            height="100%"
-          >
-            <SVGOverlay redraw={this._redrawSVGOverlay} />
-            <CanvasOverlay redraw={this._redrawCanvasOverlay} />
-            <MMarker mode="BUS" />
-            {Object.keys(coords)
-              .map(index => <MMarker
-                key={`coords-${index}`} mode="TAXI"
-                color={color(index)}
-                lon={coords[index][0]} lat={coords[index][1]} />)}
-            <Popup />
-          </ReactMapGL>
+      <Subscribe to={[PlanContainer]}>
+        {plan => (
+          <FullPageBox>
+            <Panel />
+            {mapStyle && (
+              <ReactMapGL
+                {...this.state.viewport}
+                onViewportChange={this._onViewportChange}
+                mapStyle={this.state.mapStyle}
+                reuseMaps={true}
+                width="100%"
+                height="100%"
+              >
+                <SVGOverlay redraw={this._redrawSVGOverlay} />
+                <CanvasOverlay redraw={this._redrawCanvasOverlay} />
+                {plan.state.from && <MMarker mode="BICYCLE" color={color(7)} lon={plan.state.from[0]} lat={plan.state.from[1]} />}
+                {plan.state.to && <MMarker mode="BICYCLE" color={color(8)} lon={plan.state.to[0]} lat={plan.state.to[1]} />}
+                {Object.keys(coords)
+                  .map(index => <MMarker
+                    key={`coords-${index}`} mode="TAXI"
+                    color={color(index)}
+                    lon={coords[index][0]} lat={coords[index][1]} />)}
+                <Popup />
+              </ReactMapGL>
+            )}
+          </FullPageBox>
         )}
-      </FullPageBox>
+      </Subscribe>
     )
   }
 }
