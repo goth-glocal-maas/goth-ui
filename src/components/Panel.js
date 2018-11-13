@@ -1,11 +1,12 @@
 import React, { Component } from "react"
 import styled from "styled-components"
 import { Subscribe } from "unstated"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import PlanContainer from "../unstated/plan"
 import { yellow, grayBackground } from "../constants/color"
-import ODInput from './ODInput'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ODInput from "./ODInput"
+import ItineraryChoiceItem from "./ItineraryChoiceItem"
 
 const Box = styled.div`
   width: 100%
@@ -23,6 +24,17 @@ const Box = styled.div`
   box-shadow: 1.5px 2px 2px 0 rgba(0,0,0,.2);
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 450px) {
+    width: 98%;
+    height: 50vh;
+
+    top: 45vh;
+    left: 5px;
+    width: calc(100% - 10px);
+    max-width: 450px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,.2);
+  }
 `
 
 const BoxTitle = styled.div`
@@ -37,7 +49,12 @@ const BoxContent = styled.div`
   padding: 0.5rem 0.5rem 0.5rem 1.5rem;
   background: ${grayBackground};
 
-  overflow-y: scroll;
+  overflow-y: auto;
+`
+
+const MutedHeader = styled.p`
+  color: #888;
+  font-size: 1.3rem;
 `
 
 const TagButton = styled.div`
@@ -58,6 +75,51 @@ const TagButton = styled.div`
     background: ${yellow};
     color: black;
   }
+  button {
+    height: 30px;
+    padding: 3px 3px;
+    border: 0;
+    border-radius: 10px;
+    background: ${grayBackground};
+    display: flex;
+    align-items: center;
+    color: #888;
+
+    span {
+      padding-top: 0.1rem;
+      font-size: 1.3rem;
+      margin: 0 0.2rem;
+    }
+  }
+  button:hover {
+    background: white;
+    color: #222;
+  }
+`
+
+const BoxScrollOffset = styled.div`
+  padding-right: 1rem;
+`
+
+const IndexesBox = styled.div`
+  display: flex;
+`
+
+const IndexOne = styled.div`
+  min-width: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+const IndexLabel = styled.div`
+  font-size: 1rem;
+`
+
+const IndexValue = styled.div`
+  font-size: 3.5rem;
+  line-height: 3rem;
+  text-align: center;
 `
 
 export default class Panel extends Component {
@@ -101,39 +163,21 @@ export default class Panel extends Component {
                     </a>
                   </div>
                 </div>
+
+                <div className="control">
+                  <div className="tags has-addons">
+                    <button className="">
+                      <FontAwesomeIcon icon={["far", "clock"]} size="2x" />
+                      <span>Now</span>
+                    </button>
+                  </div>
+                </div>
               </TagButton>
-              <ul>
-                <li>Yeah1</li>
-                <li>Yeah</li>
-                <li>Yeah</li>
-                <li>Yea2h</li>
-                <li>Yea3h</li>
-                <li>Yea4h</li>
-                <li>Yeah1</li>
-                <li>Yeah</li>
-                <li>Yeah</li>
-                <li>Yea2h</li>
-                <li>Yea3h</li>
-                <li>Yea4h</li>
-                <li>Yeah1</li>
-                <li>Yeah</li>
-                <li>Yeah</li>
-                <li>Yea2h</li>
-                <li>Yea3h</li>
-                <li>Yea4h</li>
-                <li>Yeah1</li>
-                <li>Yeah</li>
-                <li>Yeah</li>
-                <li>Yea2h</li>
-                <li>Yea3h</li>
-                <li>Yea4h</li>
-                <li>Yeah1</li>
-                <li>Yeah</li>
-                <li>Yeah</li>
-                <li>Yea2h</li>
-                <li>Yea3h</li>
-                <li>Yea4h</li>
-              </ul>
+
+              <BoxScrollOffset>
+                <MutedHeader>Recommended routes</MutedHeader>
+                <ItineraryChoiceItem />
+              </BoxScrollOffset>
             </BoxContent>
           </Box>
         )}
