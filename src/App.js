@@ -17,7 +17,10 @@ import {
   faCog,
   faEllipsisV
 } from "@fortawesome/free-solid-svg-icons"
-import { faClock as farFaClock } from "@fortawesome/free-regular-svg-icons"
+import {
+  faClock as farFaClock,
+  faMoneyBillAlt as farFaMoneyBillAlt
+} from "@fortawesome/free-regular-svg-icons"
 
 import Header from "./container/Header"
 import Geo from "./container/Geo"
@@ -36,8 +39,10 @@ library.add(faEllipsisH)
 library.add(faSync)
 library.add(faPlayCircle)
 library.add(faCog)
-library.add(farFaClock)
 library.add(faEllipsisV)
+
+library.add(farFaClock)
+library.add(farFaMoneyBillAlt)
 
 const App = () => (
   <div>

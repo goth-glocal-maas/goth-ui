@@ -7,6 +7,7 @@ import PlanContainer from "../unstated/plan"
 import { yellow, grayBackground } from "../constants/color"
 import ODInput from "./ODInput"
 import ItineraryChoiceItem from "./ItineraryChoiceItem"
+import ItineraryDirection from "./ItineraryDirection"
 
 const Box = styled.div`
   width: 100%
@@ -157,6 +158,7 @@ export default class Panel extends Component {
               <BoxScrollOffset>
                 <MutedHeader>Recommended routes</MutedHeader>
                 <ItineraryChoiceItem />
+                <ItineraryDirection />
               </BoxScrollOffset>
             </BoxContent>
           </Box>

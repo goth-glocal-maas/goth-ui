@@ -3,7 +3,6 @@ import styled from "styled-components"
 import { Subscribe } from "unstated"
 
 import PlanContainer from "../unstated/plan"
-import ModeIcon from "./parts/ModeIcon"
 import ItineraryStep from "./parts/ItineraryStep"
 
 const ItineraryChoiceItem = styled.div`
