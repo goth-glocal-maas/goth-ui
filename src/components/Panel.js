@@ -101,26 +101,6 @@ const BoxScrollOffset = styled.div`
   padding-right: 1rem;
 `
 
-const IndexesBox = styled.div`
-  display: flex;
-`
-
-const IndexOne = styled.div`
-  min-width: 5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
-
-const IndexLabel = styled.div`
-  font-size: 1rem;
-`
-
-const IndexValue = styled.div`
-  font-size: 3.5rem;
-  line-height: 3rem;
-  text-align: center;
-`
 
 export default class Panel extends Component {
   render() {

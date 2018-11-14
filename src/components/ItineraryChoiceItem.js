@@ -25,14 +25,20 @@ const Flex = styled.div`
   justify-content: space-between;
 `
 
-const FlexCol = styled.div``
+const FlexCol = styled.div`
+`
+
+const FlexColCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 const MinBig = styled.span`
   font-size: 4rem;
 `
 
 const MinBox = styled.div`
   display: flex;
-  width: 6rem;
 `
 
 const MinUnit = styled.span`
@@ -48,6 +54,27 @@ const CostUnit = styled.span`
   color: #444;
 `
 
+const IndexesBox = styled.div`
+  display: flex;
+`
+
+const IndexOne = styled.div`
+  min-width: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+const IndexLabel = styled.div`
+  font-size: 1rem;
+`
+
+const IndexValue = styled.div`
+  font-size: 3.5rem;
+  line-height: 3rem;
+  text-align: center;
+`
+
 const ChioceItem = props => {
   return (
     <Subscribe to={[PlanContainer]}>
@@ -55,8 +82,8 @@ const ChioceItem = props => {
         <ItineraryChoiceItem>
           <ItineraryStep />
           <Flex>
-            <FlexCol>
-              <div style={{ display: "flex", flexDirection: "column" }}>
+            <FlexColCenter>
+              {/* <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ fontSize: "1.2rem" }}>
                   <ModeIcon size="2x" mode={"WALK"} key={`leg-icon-1`} />
                   <span>&nbsp;∘∘&nbsp;</span>
@@ -64,8 +91,18 @@ const ChioceItem = props => {
                   <span>&nbsp;∘∘&nbsp;</span>
                   <ModeIcon size="2x" mode={"WALK"} key={`leg-icon-3`} />
                 </div>
-              </div>
-            </FlexCol>
+              </div> */}
+              <IndexesBox>
+                <IndexOne>
+                  <IndexLabel>SAFETY</IndexLabel>
+                  <IndexValue>B</IndexValue>
+                </IndexOne>
+                <IndexOne>
+                  <IndexLabel>WALKABILITY</IndexLabel>
+                  <IndexValue>A</IndexValue>
+                </IndexOne>
+              </IndexesBox>
+            </FlexColCenter>
             <FlexCol>
               <MinBox>
                 <MinBig>34</MinBig>
