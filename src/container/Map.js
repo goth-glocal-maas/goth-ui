@@ -120,14 +120,14 @@ class Map extends Component {
     // loop through every leg of this itinerary
     const { legs } = itinerary
     return (
-      <g>
+      <g key={`iti-${index}`}>
         {legs.map((leg, legIndex) => {
           const coordinates = polyline.toGeoJSON(leg.legGeometry.points)
             .coordinates
           const points = coordinates
             .map(project)
             .map(p => [round(p[0], 1), round(p[1], 1)])
-          return <g key={legIndex}>{this._renderLeg(points, legIndex, leg)}</g>
+          return <g key={`iti-leg-${index}${legIndex}`}>{this._renderLeg(points, legIndex, leg)}</g>
         })}
       </g>
     )
@@ -174,7 +174,7 @@ class Map extends Component {
 
   _loadData = data => {
     let _mapStyle = fromJS(this.state.defaultMapStyle)
-    console.log("_loadData:", data, _mapStyle)
+    // console.log("_loadData:", data, _mapStyle)
     if (!data) {
       this.setState({ mapStyle: _mapStyle })
       return
