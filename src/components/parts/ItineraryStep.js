@@ -78,12 +78,18 @@ const ItineraryStep = props => {
   }
   const {
     minStartTime,
+    maxEndTime,
     maxPercent,
     itinerary: { startTime, endTime, legs }
   } = props
   const TotalTripSec = (endTime - startTime) / 1000
   const percentPerSec = maxPercent / TotalTripSec
   let accumulatePercent = 0
+  // console.log(minStartTime, startTime)
+  // console.log(maxEndTime, endTime, maxPercent)
+  // console.log("total trip (s): ", TotalTripSec)
+  // console.log("percentPerSec: ", percentPerSec)
+  let prevEndTime;
 
   return (
     <PaddingBox>
@@ -91,28 +97,33 @@ const ItineraryStep = props => {
         <BarBar style={{ width: `${maxPercent}%` }}>
           <BarDots>
             {legs.map((leg, i) => {
+              const waitingTime = (!prevEndTime ? 0 : leg.startTime - prevEndTime)
+              prevEndTime = leg.endTime
+              const waitingPercent = waitingTime/1000 * percentPerSec
+
               let percent
               if (i === 0) {
                 percent =
                   ((startTime - minStartTime) / (endTime - minStartTime)) * 100
+                percent += leg.duration * percentPerSec
               } else {
                 percent = leg.duration * percentPerSec
               }
-              accumulatePercent += percent
-
+              const currPercent = accumulatePercent
+              accumulatePercent += (waitingPercent + percent)
+              const showIcon = percent > 4
+              const iconColor = leg.routeColor ? `#${leg.routeColor}` : red
               return (
                 <Dot
                   key={`bardot-${minStartTime}-${leg.distance}`}
-                  style={{ left: `${accumulatePercent}%` }}
+                  style={{ left: `${currPercent}%` }}
                 >
-                  <span
+                  {showIcon && <span
                     className="icon top"
-                    style={{
-                      color: leg.routeColor ? `#${leg.routeColor}` : red
-                    }}
+                    style={{color: iconColor}}
                   >
                     <ModeIcon mode={leg.mode} size="1x" />
-                  </span>
+                  </span>}
                 </Dot>
               )
             })}

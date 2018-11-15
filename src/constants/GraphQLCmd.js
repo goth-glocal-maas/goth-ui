@@ -19,6 +19,8 @@ query ROUTEPLAN_QUERY($from: String!, $to: String!, $date: String!, $time: Strin
       walkingDistance
       transfers
       legs {
+        startTime
+        endTime
         distance
         duration
         mode
@@ -47,6 +49,7 @@ query ROUTEPLAN_QUERY($from: String!, $to: String!, $date: String!, $time: Strin
         steps {
           distance
           relativeDirection
+          streetName
         }
       }
     }
