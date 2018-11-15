@@ -69,7 +69,7 @@ class ODInput extends Component {
   render() {
     const { origin, originLabel, destination, destinationLabel } = this.props
     const bothFilled =
-      (origin.length > 0 && destination.length > 0) ? true : undefined
+      (origin.length > 0 && destination.length > 0) ? "1" : undefined
     const tsp = new Date().getTime()
     return (
       <ODBox>

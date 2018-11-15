@@ -22,10 +22,7 @@ import {
   faMoneyBillAlt as farFaMoneyBillAlt
 } from "@fortawesome/free-regular-svg-icons"
 
-import Header from "./container/Header"
-import Geo from "./container/Geo"
 import Map from "./container/Map"
-import Gone from "./container/Gone"
 
 library.add(faWalking)
 library.add(faBus)
@@ -45,15 +42,11 @@ library.add(farFaClock)
 library.add(farFaMoneyBillAlt)
 
 const App = () => (
-  <div>
-    {/* <Header /> */}
-    <Switch>
-      <Route path="/old" component={Geo} />
-      <Route path="/" component={Map} />
-      {/* both /roster and /roster/:number begin with /roster */}
-      {/* <Route path="/roster/:id" component={Gone} /> */}
-    </Switch>
-  </div>
+  <Switch>
+    <Route path={`/p/:from/:to/:mode`} component={Map} />
+    <Route path={`/p/:from/:to`} component={Map} />
+    <Route path="/" component={Map} />
+  </Switch>
 )
 
 export default App

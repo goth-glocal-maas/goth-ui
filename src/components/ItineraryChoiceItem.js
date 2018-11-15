@@ -24,8 +24,7 @@ const Flex = styled.div`
   justify-content: space-between;
 `
 
-const FlexCol = styled.div`
-`
+const FlexCol = styled.div``
 
 const FlexColCenter = styled.div`
   display: flex;
@@ -75,11 +74,16 @@ const IndexValue = styled.div`
 `
 
 const ChioceItem = props => {
+  const { minStartTime, maxEndTime } = props
+  const { startTime, endTime } = props.itinerary
+  const durationMin = (endTime - startTime) / 60 / 1000
+  const maxPercent =
+    maxEndTime === endTime ? 100 : ((endTime - minStartTime) / (maxEndTime - minStartTime)) * 100
   return (
     <Subscribe to={[PlanContainer]}>
       {plan => (
         <ItineraryChoiceItem>
-          <ItineraryStep />
+          <ItineraryStep {...props} maxPercent={maxPercent} />
           <Flex>
             <FlexColCenter>
               {/* <div style={{ display: "flex", flexDirection: "column" }}>
@@ -104,7 +108,7 @@ const ChioceItem = props => {
             </FlexColCenter>
             <FlexCol>
               <MinBox>
-                <MinBig>34</MinBig>
+                <MinBig>{durationMin.toFixed(0)}</MinBig>
                 <MinUnit>min</MinUnit>
               </MinBox>
               <MinBox>

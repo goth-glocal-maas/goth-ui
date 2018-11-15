@@ -1,7 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 import { red } from "../../constants/color"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import _ from "lodash"
+import ModeIcon from "./ModeIcon"
 
 const PaddingBox = styled.div`
   padding: 2.5rem 1.5rem 1.5rem;
@@ -64,29 +65,59 @@ const Dot = styled.div`
   }
 `
 
+const getHHMM = tmsp => {
+  const d = new Date(tmsp)
+  const hh = d.getHours()
+  const mm = d.getMinutes()
+  return `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
+}
+
 const ItineraryStep = props => {
+  if (_.isEmpty(props)) {
+    return <React.Fragment />
+  }
+  const {
+    minStartTime,
+    maxPercent,
+    itinerary: { startTime, endTime, legs }
+  } = props
+  const TotalTripSec = (endTime - startTime) / 1000
+  const percentPerSec = maxPercent / TotalTripSec
+  let accumulatePercent = 0
+
   return (
     <PaddingBox>
       <BarContainer>
-        <BarBar style={{ width: "68%" }}>
+        <BarBar style={{ width: `${maxPercent}%` }}>
           <BarDots>
-            <Dot style={{ left: "2%" }}>
-              <span className="icon top">
-                <FontAwesomeIcon icon="walking" size="1x" />
-              </span>
-            </Dot>
-            <Dot style={{ left: "31.4319%" }}>
-              <span className="icon top">
-                <FontAwesomeIcon icon="bus" size="1x" />
-              </span>
-            </Dot>
-            <Dot style={{ left: "39.976%" }}>
-              <span className="icon top">
-                <FontAwesomeIcon icon="subway" size="1x" />
-              </span>
-            </Dot>
+            {legs.map((leg, i) => {
+              let percent
+              if (i === 0) {
+                percent =
+                  ((startTime - minStartTime) / (endTime - minStartTime)) * 100
+              } else {
+                percent = leg.duration * percentPerSec
+              }
+              accumulatePercent += percent
+
+              return (
+                <Dot
+                  key={`bardot-${minStartTime}-${leg.distance}`}
+                  style={{ left: `${accumulatePercent}%` }}
+                >
+                  <span
+                    className="icon top"
+                    style={{
+                      color: leg.routeColor ? `#${leg.routeColor}` : red
+                    }}
+                  >
+                    <ModeIcon mode={leg.mode} size="1x" />
+                  </span>
+                </Dot>
+              )
+            })}
             <Dot style={{ left: "100%" }}>
-              <span className="top">13:24</span>
+              <span className="top">{getHHMM(endTime)}</span>
             </Dot>
           </BarDots>
         </BarBar>

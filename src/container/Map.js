@@ -1,6 +1,6 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import ReactMapGL, {
-  LinearInterpolator,
+  // LinearInterpolator,
   SVGOverlay,
   CanvasOverlay
 } from "react-map-gl"
@@ -12,7 +12,7 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { scaleOrdinal } from "d3-scale"
 import { schemeCategory10 } from "d3-scale-chromatic"
 import { rgb } from "d3-color"
-import { Subscribe } from "unstated"
+import { inject, Subscribe } from "unstated"
 
 import PlanContainer from "../unstated/plan"
 
@@ -70,7 +70,7 @@ class Map extends Component {
       tapLocation: []
     },
     defaultMapStyle: null,
-    mapStyle: null
+    mapStyle: null,
   }
 
   constructor(props) {
@@ -120,14 +120,18 @@ class Map extends Component {
     // loop through every leg of this itinerary
     const { legs } = itinerary
     return (
-      <g key={`iti-${index}`}>
+      <g key={`iti::${index}`}>
         {legs.map((leg, legIndex) => {
           const coordinates = polyline.toGeoJSON(leg.legGeometry.points)
             .coordinates
           const points = coordinates
             .map(project)
             .map(p => [round(p[0], 1), round(p[1], 1)])
-          return <g key={`iti-leg-${index}${legIndex}`}>{this._renderLeg(points, legIndex, leg)}</g>
+          return (
+            <g key={`iti-leg-${index}${legIndex}`}>
+              {this._renderLeg(points, legIndex, leg)}
+            </g>
+          )
         })}
       </g>
     )
@@ -135,8 +139,7 @@ class Map extends Component {
 
   _redrawSVGOverlay({ project }) {
     // Take all itineraries and start drawing leg
-    // TODO: change this to this.state
-    const { itineraries } = ROUTES.data.route_plan
+    const { itineraries } = this.props.plan.state
     return (
       <g>
         {itineraries.map((itinerary, index) =>
@@ -157,24 +160,22 @@ class Map extends Component {
   }
 
   _redrawCanvasOverlay({ ctx, width, height, project }) {
-    // TODO: change this to this.state
-    const { itineraries } = ROUTES.data.route_plan
+    const { itineraries } = this.props.plan.state
     ctx.clearRect(0, 0, width, height)
     itineraries.map((itinerary, _) => {
       itinerary.legs.map((leg, index) => {
         // draw start & end of every legs
         const se = [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat]]
         const routeColor = leg.routeColor ? `#${leg.routeColor}` : color(6)
-        se.map(project).forEach((p, i) =>
-          this._redrawDot(ctx, p, i, routeColor)
-        )
+        return se
+          .map(project)
+          .forEach((p, i) => this._redrawDot(ctx, p, i, routeColor))
       })
     })
   }
 
   _loadData = data => {
     let _mapStyle = fromJS(this.state.defaultMapStyle)
-    // console.log("_loadData:", data, _mapStyle)
     if (!data) {
       this.setState({ mapStyle: _mapStyle })
       return
@@ -193,69 +194,56 @@ class Map extends Component {
 
   render() {
     const { mapStyle, tapLocation } = this.state
-    const { itineraries } = ROUTES.data.route_plan
-    const { legs } = itineraries[0]
-    const coords = [
-      [legs[0].from.lon, legs[0].from.lat],
-      [legs[3].to.lon, legs[3].to.lat]
-    ]
-
+    const { plan } = this.props
     return (
-      <Subscribe to={[PlanContainer]}>
-        {plan => (
-          <FullPageBox>
-            <Panel />
-            {mapStyle && (
-              <ReactMapGL
-                {...this.state.viewport}
-                onViewportChange={this._onViewportChange}
-                mapStyle={this.state.mapStyle}
-                reuseMaps={true}
-                width="100%"
-                height="100%"
-                onClick={this._onClick}
-              >
-                <SVGOverlay redraw={this._redrawSVGOverlay} />
-                <CanvasOverlay redraw={this._redrawCanvasOverlay} />
-                {plan.state.from && (
-                  <MMarker
-                    mode="BICYCLE"
-                    color={color(7)}
-                    lon={plan.state.from[0]}
-                    lat={plan.state.from[1]}
-                  />
-                )}
-                {plan.state.to && (
-                  <MMarker
-                    mode="BICYCLE"
-                    color={color(8)}
-                    lon={plan.state.to[0]}
-                    lat={plan.state.to[1]}
-                  />
-                )}
-                {Object.keys(coords).map(index => (
-                  <MMarker
-                    key={`coords-${index}`}
-                    mode="TAXI"
-                    color={color(index)}
-                    lon={coords[index][0]}
-                    lat={coords[index][1]}
-                  />
-                ))}
-                <TapToMap
-                  lat={tapLocation && tapLocation[1]}
-                  lon={tapLocation && tapLocation[0]}
-                  onSetFrom={plan.setFrom}
-                  onSetTo={plan.setTo}
-                  onCloseClick={this._onTapToMapCloseClick.bind(this)}
-                />
-              </ReactMapGL>
+      <FullPageBox>
+        <Panel {...this.props} />
+        {mapStyle && (
+          <ReactMapGL
+            {...this.state.viewport}
+            onViewportChange={this._onViewportChange}
+            mapStyle={this.state.mapStyle}
+            reuseMaps={true}
+            width="100%"
+            height="100%"
+            onClick={this._onClick}
+          >
+            <SVGOverlay redraw={this._redrawSVGOverlay} />
+            <CanvasOverlay redraw={this._redrawCanvasOverlay} />
+            {plan.state.from.length === 2 && (
+              <MMarker
+                mode="BICYCLE"
+                color={color(7)}
+                lat={plan.state.from[0]}
+                lon={plan.state.from[1]}
+              />
             )}
-          </FullPageBox>
+            {plan.state.to.length === 2 && (
+              <MMarker
+                mode="BICYCLE"
+                color={color(8)}
+                lat={plan.state.to[0]}
+                lon={plan.state.to[1]}
+              />
+            )}
+            <TapToMap
+              lat={tapLocation && tapLocation[1]}
+              lon={tapLocation && tapLocation[0]}
+              onSetFrom={v => plan.setFrom(v)}
+              onSetTo={v => plan.setTo(v)}
+              onCloseClick={this._onTapToMapCloseClick.bind(this)}
+            />
+          </ReactMapGL>
         )}
-      </Subscribe>
+      </FullPageBox>
     )
   }
 }
 
-export default Map
+export default props => {
+  return (
+    <Subscribe to={[PlanContainer]}>
+      {plan => <Map {...props} plan={plan} />}
+    </Subscribe>
+  )
+}

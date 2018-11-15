@@ -3,11 +3,12 @@ import { Container } from "unstated"
 
 class PlanContainer extends Container {
   state = {
-    from: [],
-    to: [],
+    from: [],  // latlon
+    to: [],    // latlon
     timestamp: -1,
     picked: 0,
     itineraries: [],
+    mode: 0,
     hash: ""
   }
 
@@ -26,6 +27,10 @@ class PlanContainer extends Container {
     this.setState({ itineraries: items })
   }
 
+  setOD = ({ from, to }) => {
+    this.setState({ from, to })
+  }
+
   setFrom = from => {
     this.setState({ from })
   }
@@ -34,8 +39,13 @@ class PlanContainer extends Container {
     this.setState({ to })
   }
 
-  setTimestamp = timestamp => {
-    this.setState({ timestamp })
+  setMode = mode => {
+    this.setState({ mode })
+  }
+
+  setTimestamp = async timestamp => {
+    await this.setState({ timestamp })
+    return timestamp
   }
 }
 

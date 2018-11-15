@@ -16,6 +16,9 @@ const ModeIcon = (props) => {
   if (iconName !== undefined)
     return <FontAwesomeIcon icon={iconName} size={props.size || "2x"} />
 
+  if (props.mode === "TRANSIT,WALK")
+    return <FontAwesomeIcon icon={iconConv.BUS} size={props.size || "2x"} />
+
   return <i>{props.mode}</i>
 }
 

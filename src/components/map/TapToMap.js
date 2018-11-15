@@ -15,13 +15,13 @@ const StyledUL = styled.ul`
 export default class TapToMap extends Component {
   onHandleSetFrom() {
     const { lat, lon, onSetFrom, onCloseClick } = this.props
-    onSetFrom([lon, lat])
+    onSetFrom([lat, lon])
     onCloseClick()
   }
 
   onHandleSetTo() {
     const { lat, lon, onSetTo, onCloseClick } = this.props
-    onSetTo([lon, lat])
+    onSetTo([lat, lon])
     onCloseClick()
   }
 

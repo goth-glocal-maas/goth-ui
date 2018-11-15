@@ -132,7 +132,7 @@ const ItineraryDirection = props => {
                 <span>12:05</span>
               </ItemLine>
               <div>
-                <ModeIcon mode="WALK" size="1.5x" />
+                <ModeIcon mode="WALK" size="1x" />
                 &nbsp; 23 minutes
               </div>
               <ItemPrice>
@@ -154,7 +154,7 @@ const ItineraryDirection = props => {
                 <span>12:34</span>
               </ItemLine>
               <div>
-                <ModeIcon mode="BUS" size="1.5x" />
+                <ModeIcon mode="BUS" size="1x" />
                 &nbsp; 50 minutes
               </div>
               <div className="info">

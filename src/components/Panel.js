@@ -1,13 +1,18 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import styled from "styled-components"
+import { Query } from "react-apollo"
 import { Subscribe } from "unstated"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import _ from "lodash"
 
 import PlanContainer from "../unstated/plan"
 import { yellow, grayBackground } from "../constants/color"
 import ODInput from "./ODInput"
 import ItineraryChoiceItem from "./ItineraryChoiceItem"
 import ItineraryDirection from "./ItineraryDirection"
+import PanelModeSelector from "./parts/PanelModeSelector"
+import { ROUTEPLAN_QUERY } from "../constants/GraphQLCmd"
+import { getCurrentTimeForPlan } from "../utils/fn"
+import { TRANSPORT_MODES } from "../constants/mode"
 
 const Box = styled.div`
   width: 100%
@@ -58,112 +63,137 @@ const MutedHeader = styled.p`
   font-size: 1.3rem;
 `
 
-const TagButton = styled.div`
-  a {
-    width: 30px;
-    height: 30px;
-    padding: 3px 3px;
-    font-size: 1.1rem;
-    box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.2);
-  }
-  a.is-link {
-    color: #fff;
-  }
-  a.is-white {
-    color: #888;
-  }
-  a.is-selected {
-    background: ${yellow};
-    color: black;
-  }
-  button {
-    height: 30px;
-    padding: 3px 3px;
-    border: 0;
-    border-radius: 10px;
-    background: ${grayBackground};
-    display: flex;
-    align-items: center;
-    color: #888;
-
-    span {
-      padding-top: 0.1rem;
-      font-size: 1.3rem;
-      margin: 0 0.2rem;
-    }
-  }
-  button:hover {
-    background: white;
-    color: #222;
-  }
-`
-
 const BoxScrollOffset = styled.div`
   padding-right: 1rem;
 `
 
+class Panel extends Component {
 
-export default class Panel extends Component {
-  render() {
+  componentWillReceiveProps(nextProps) {
+    /* This update URL to current one, so that user can copy and share */
+    const {
+      history,
+      location: { pathname, search },
+      match: { params }
+    } = nextProps
+    const { from, to, mode, timestamp } = nextProps.plan.state
+    const hasData = from.length > 0 && to.length > 0
+    const _from = from.join(",")
+    const _to = to.join(",")
+    if (
+      hasData &&
+      (params.from !== _from || params.to !== _to || +params.mode !== +mode)
+    ) {
+      const nUrl = `/p/${_from}/${_to}/${mode}?ts=${timestamp}`
+      const currUrl = `${pathname}${search}`
+      if (currUrl !== nUrl)
+        history.push(`/p/${_from}/${_to}/${mode}?ts=${timestamp}`)
+    }
+  }
+
+  renderItineraryChoices(route_plan) {
+    if (_.isEmpty(route_plan)) return <Fragment />
+
+    const { itineraries } = route_plan
+    const startTimes = itineraries.map(i => i.startTime)
+    const endTimes = itineraries.map(i => i.endTime)
+    const minStartTime = _.min(startTimes)
+    const maxEndTime = _.max(endTimes)
+
     return (
-      <Subscribe to={[PlanContainer]}>
-        {plan => (
-          <Box>
-            <BoxTitle>GoTH</BoxTitle>
-            <BoxContent>
-              <ODInput origin={plan.state.from} destination={plan.state.to} />
-              <TagButton className="field is-grouped is-grouped-multiline">
-                <div className="control">
-                  <div className="tags has-addons">
-                    <a className="tag is-white">
-                      <FontAwesomeIcon icon="bus" size="2x" />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="control">
-                  <div className="tags has-addons">
-                    <a className="tag is-white">
-                      <FontAwesomeIcon icon="walking" size="2x" />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="control">
-                  <div className="tags has-addons">
-                    <a className="tag is-white">
-                      <FontAwesomeIcon icon="bicycle" size="2x" />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="control">
-                  <div className="tags has-addons">
-                    <a className="tag is-selected">
-                      <FontAwesomeIcon icon="car" size="2x" />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="control">
-                  <div className="tags has-addons">
-                    <button className="">
-                      <FontAwesomeIcon icon={["far", "clock"]} size="2x" />
-                      <span>Now</span>
-                    </button>
-                  </div>
-                </div>
-              </TagButton>
-
-              <BoxScrollOffset>
-                <MutedHeader>Recommended routes</MutedHeader>
-                <ItineraryChoiceItem />
-                <ItineraryDirection />
-              </BoxScrollOffset>
-            </BoxContent>
-          </Box>
-        )}
-      </Subscribe>
+      <Fragment>
+        {itineraries.map((one, index) => (
+          <ItineraryChoiceItem
+            key={`itiCI-${index}`}
+            itinerary={one}
+            minStartTime={minStartTime}
+            maxEndTime={maxEndTime}
+          />
+        ))}
+      </Fragment>
     )
   }
+
+  render() {
+    const {
+      location: { search },
+      match: { params },
+      plan
+    } = this.props
+
+    const { from, to, mode, timestamp, hash } = plan.state
+    let tmsp = timestamp > 0 ? timestamp : new Date().getTime()
+    let md = mode
+
+    if (params.from && params.to && from.length === 0 && to.length === 0) {
+      const nFrom = params.from.split(",").map(i => +i)
+      const nTo = params.to.split(",").map(i => +i)
+      plan.setOD({ from: nFrom, to: nTo })
+      if (search) tmsp = search.split("ts=")[1]
+      if (params.mode) {
+        plan.setMode(+params.mode)
+        md = +params.mode
+      }
+      return <p>Loading...</p>
+    }
+
+    if (timestamp === -1) plan.setTimestamp(tmsp)
+
+    const hasData = from.length > 0 && to.length > 0
+    let planParams = getCurrentTimeForPlan(tmsp)
+    planParams.from = from.join(",")
+    planParams.to = to.join(",")
+    planParams.mode = TRANSPORT_MODES[md]
+
+    return (
+      <Query query={ROUTEPLAN_QUERY} variables={planParams} skip={!hasData}>
+        {({ loading, error, data }) => {
+          // console.log(loading, error, data)
+          const itiHash = `${planParams.from}${planParams.to}${md}T${tmsp}`
+          if (
+            !loading &&
+            !error &&
+            data &&
+            data.route_plan &&
+            data.route_plan.itineraries &&
+            hash !== itiHash
+          ) {
+            plan.setItineraryResult(
+              from,
+              to,
+              tmsp,
+              data.route_plan.itineraries,
+              itiHash
+            )
+          }
+
+          return (
+            <Box>
+              <BoxTitle>GoTH</BoxTitle>
+              <BoxContent>
+                <ODInput origin={from} destination={to} />
+                <PanelModeSelector
+                  mode={mode}
+                  setMode={mode => plan.setMode(mode)}
+                />
+                <BoxScrollOffset>
+                  <MutedHeader>Recommended routes</MutedHeader>
+                  {data && this.renderItineraryChoices(data.route_plan)}
+                  {/* <ItineraryDirection /> */}
+                </BoxScrollOffset>
+              </BoxContent>
+            </Box>
+          )
+        }}
+      </Query>
+    )
+  }
+}
+
+export default props => {
+  return (
+    <Subscribe to={[PlanContainer]}>
+      {plan => <Panel {...props} plan={plan} />}
+    </Subscribe>
+  )
 }
