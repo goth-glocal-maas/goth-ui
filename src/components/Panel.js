@@ -121,7 +121,7 @@ class Panel extends Component {
       plan
     } = this.props
 
-    const { from, to, mode, timestamp, hash } = plan.state
+    const { from, to, mode, timestamp, hash, picked } = plan.state
     let tmsp = timestamp > 0 ? timestamp : new Date().getTime()
     let md = mode
 
@@ -169,6 +169,8 @@ class Panel extends Component {
             )
           }
 
+          const pickedTrip = goodTrips[picked]
+
           return (
             <Box>
               <BoxTitle>GoTH</BoxTitle>
@@ -181,7 +183,7 @@ class Panel extends Component {
                 <BoxScrollOffset>
                   <MutedHeader>Recommended routes</MutedHeader>
                   {data && this.renderItineraryChoices(goodTrips)}
-                  {/* <ItineraryDirection /> */}
+                  {pickedTrip && <ItineraryDirection trip={pickedTrip} />}
                 </BoxScrollOffset>
               </BoxContent>
             </Box>

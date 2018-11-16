@@ -99,7 +99,7 @@ class Map extends Component {
   componentWillReceiveProps(nextProps) {
     const { hash, itineraries } = nextProps.plan.state
     if (hash !== this.state.hash) {
-      this.setState({ hash, itineraries: getGoodTrips(itineraries) })
+      this.setState({ hash, goodTrips: getGoodTrips(itineraries) })
     }
   }
 
@@ -148,10 +148,10 @@ class Map extends Component {
 
   _redrawSVGOverlay({ project }) {
     // Take all itineraries and start drawing leg
-    const { itineraries } = this.state
+    const { goodTrips } = this.state
     return (
       <g>
-        {itineraries.map((itinerary, index) =>
+        {goodTrips.map((itinerary, index) =>
           this._redrawItinerary(project, itinerary, index)
         )}
       </g>
@@ -169,9 +169,9 @@ class Map extends Component {
   }
 
   _redrawCanvasOverlay({ ctx, width, height, project }) {
-    const { itineraries } = this.state
+    const { goodTrips } = this.state
     ctx.clearRect(0, 0, width, height)
-    itineraries.map((itinerary, _) => {
+    goodTrips.map((itinerary, _) => {
       itinerary.legs.map((leg, index) => {
         // draw start & end of every legs
         const se = [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat]]

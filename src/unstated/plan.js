@@ -6,21 +6,22 @@ class PlanContainer extends Container {
     from: [],  // latlon
     to: [],    // latlon
     timestamp: -1,
-    picked: 0,
+    picked: -1,
     itineraries: [],
     mode: 0,
     hash: ""
   }
 
   setItineraryResult = (from, to, timestamp, itineraries, hash) => {
-    this.setState({ from, to, timestamp, itineraries, hash })
+    // reset picked in the process
+    this.setState({ from, to, timestamp, itineraries, hash, picked: -1 })
   }
 
   setPickedItinerary = index => {
     // set new hash to force re-render PlanPolygonOverlay
-    const { hash } = this.state
-    const h = hash.split("P")[0]
-    this.setState({ picked: index, hash: `${h}P${index}` })
+    // const { hash } = this.state
+    // const h = hash.split("P")[0]
+    this.setState({ picked: index }) // , hash: `${h}P${index}` })
   }
 
   setItineraries = items => {
