@@ -11,7 +11,7 @@ import ItineraryChoiceItem from "./ItineraryChoiceItem"
 import ItineraryDirection from "./ItineraryDirection"
 import PanelModeSelector from "./parts/PanelModeSelector"
 import { ROUTEPLAN_QUERY } from "../constants/GraphQLCmd"
-import { getCurrentTimeForPlan } from "../utils/fn"
+import { getCurrentTimeForPlan, getGoodTrips } from "../utils/fn"
 import { TRANSPORT_MODES } from "../constants/mode"
 
 const Box = styled.div`
@@ -91,20 +91,20 @@ class Panel extends Component {
     }
   }
 
-  renderItineraryChoices(route_plan) {
-    if (_.isEmpty(route_plan)) return <Fragment />
+  renderItineraryChoices(trips) {
+    if (trips.length === 0) return <Fragment />
 
-    const { itineraries } = route_plan
-    const startTimes = itineraries.map(i => i.startTime)
-    const endTimes = itineraries.map(i => i.endTime)
+    const startTimes = trips.map(i => i.startTime)
+    const endTimes = trips.map(i => i.endTime)
     const minStartTime = _.min(startTimes)
     const maxEndTime = _.max(endTimes)
 
     return (
       <Fragment>
-        {itineraries.map((one, index) => (
+        {trips.map((one, index) => (
           <ItineraryChoiceItem
             key={`itiCI-${index}`}
+            index={index}
             itinerary={one}
             minStartTime={minStartTime}
             maxEndTime={maxEndTime}
@@ -150,19 +150,21 @@ class Panel extends Component {
         {({ loading, error, data }) => {
           // console.log(loading, error, data)
           const itiHash = `${planParams.from}${planParams.to}${md}T${tmsp}`
+          const hasTrip = !_.isEmpty(data.route_plan)
+          const goodTrips = hasTrip ? getGoodTrips(data.route_plan.itineraries) : []
+
           if (
             !loading &&
             !error &&
-            data &&
-            data.route_plan &&
-            data.route_plan.itineraries &&
+            hasTrip &&
             hash !== itiHash
           ) {
+
             plan.setItineraryResult(
               from,
               to,
               tmsp,
-              data.route_plan.itineraries,
+              goodTrips,
               itiHash
             )
           }
@@ -178,7 +180,7 @@ class Panel extends Component {
                 />
                 <BoxScrollOffset>
                   <MutedHeader>Recommended routes</MutedHeader>
-                  {data && this.renderItineraryChoices(data.route_plan)}
+                  {data && this.renderItineraryChoices(goodTrips)}
                   {/* <ItineraryDirection /> */}
                 </BoxScrollOffset>
               </BoxContent>

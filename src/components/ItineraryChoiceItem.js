@@ -77,12 +77,16 @@ const ChioceItem = props => {
   const { minStartTime, maxEndTime } = props
   const { startTime, endTime } = props.itinerary
   const durationMin = (endTime - startTime) / 60 / 1000
-  const maxPercent =
-    maxEndTime === endTime ? 100 : ((endTime - minStartTime) / (maxEndTime - minStartTime)) * 100
+  if (durationMin > 300)
+    return <React.Fragment />
+  const maxPercent = maxEndTime === endTime
+    ? 100
+    : ((endTime - minStartTime) / (maxEndTime - minStartTime)) * 100
+
   return (
     <Subscribe to={[PlanContainer]}>
       {plan => (
-        <ItineraryChoiceItem>
+        <ItineraryChoiceItem onClick={() => { plan.setPickedItinerary(props.index) }}>
           <ItineraryStep {...props} maxPercent={maxPercent} />
           <Flex>
             <FlexColCenter>

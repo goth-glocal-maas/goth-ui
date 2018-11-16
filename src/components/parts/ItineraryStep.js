@@ -91,14 +91,19 @@ const ItineraryStep = props => {
   // console.log("percentPerSec: ", percentPerSec)
   let prevEndTime;
 
+  // TODO: fix percent over 100%
+  // http://localhost:3000/#/p/7.889143162249294,98.37364192222041/7.830765363613014,98.29454086190445/0?ts=1542348791596
+
   return (
     <PaddingBox>
       <BarContainer>
         <BarBar style={{ width: `${maxPercent}%` }}>
           <BarDots>
             {legs.map((leg, i) => {
+              // console.log(prevEndTime)
               const waitingTime = (!prevEndTime ? 0 : leg.startTime - prevEndTime)
               prevEndTime = leg.endTime
+              // console.log('waiting time : ', waitingTime)
               const waitingPercent = waitingTime/1000 * percentPerSec
 
               let percent
@@ -113,6 +118,9 @@ const ItineraryStep = props => {
               accumulatePercent += (waitingPercent + percent)
               const showIcon = percent > 4
               const iconColor = leg.routeColor ? `#${leg.routeColor}` : red
+
+              //console.log(leg.mode, currPercent, waitingPercent, percent, accumulatePercent, leg.duration, leg)
+
               return (
                 <Dot
                   key={`bardot-${minStartTime}-${leg.distance}`}

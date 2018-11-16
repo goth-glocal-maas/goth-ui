@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react"
+import React, { Component } from "react"
 import ReactMapGL, {
   // LinearInterpolator,
   SVGOverlay,
@@ -12,7 +12,7 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { scaleOrdinal } from "d3-scale"
 import { schemeCategory10 } from "d3-scale-chromatic"
 import { rgb } from "d3-color"
-import { inject, Subscribe } from "unstated"
+import { Subscribe } from "unstated"
 
 import PlanContainer from "../unstated/plan"
 
@@ -20,9 +20,9 @@ import Panel from "../components/Panel"
 import MMarker from "../components/map/Marker"
 import TapToMap from "../components/map/TapToMap"
 import { MODE_GL_STYLES } from "../constants/mode"
+import { getGoodTrips } from "../utils/fn"
 
 import alphaify from "../utils/alphaify"
-import ROUTES from "../test/rt_result.json"
 
 const FullPageBox = styled.div`
   height: 100vh;
@@ -71,6 +71,8 @@ class Map extends Component {
     },
     defaultMapStyle: null,
     mapStyle: null,
+    goodTrips: [],
+    hash: '',
   }
 
   constructor(props) {
@@ -92,6 +94,13 @@ class Map extends Component {
       .catch(error => {
         console.error(error)
       })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { hash, itineraries } = nextProps.plan.state
+    if (hash !== this.state.hash) {
+      this.setState({ hash, itineraries: getGoodTrips(itineraries) })
+    }
   }
 
   _renderLeg(points, index, leg) {
@@ -139,7 +148,7 @@ class Map extends Component {
 
   _redrawSVGOverlay({ project }) {
     // Take all itineraries and start drawing leg
-    const { itineraries } = this.props.plan.state
+    const { itineraries } = this.state
     return (
       <g>
         {itineraries.map((itinerary, index) =>
@@ -160,7 +169,7 @@ class Map extends Component {
   }
 
   _redrawCanvasOverlay({ ctx, width, height, project }) {
-    const { itineraries } = this.props.plan.state
+    const { itineraries } = this.state
     ctx.clearRect(0, 0, width, height)
     itineraries.map((itinerary, _) => {
       itinerary.legs.map((leg, index) => {
