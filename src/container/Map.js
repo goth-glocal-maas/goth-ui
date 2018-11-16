@@ -195,6 +195,7 @@ class Map extends Component {
 
   _onClick = ({ lngLat }) => {
     this.setState({ tapLocation: lngLat })
+    setTimeout(() => this.setState({ tapLocation: []}), 3000)
   }
 
   _onTapToMapCloseClick() {
