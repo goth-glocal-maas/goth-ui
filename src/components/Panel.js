@@ -68,7 +68,6 @@ const BoxScrollOffset = styled.div`
 `
 
 class Panel extends Component {
-
   componentWillReceiveProps(nextProps) {
     /* This update URL to current one, so that user can copy and share */
     const {
@@ -151,39 +150,45 @@ class Panel extends Component {
           // console.log(loading, error, data)
           const itiHash = `${planParams.from}${planParams.to}${md}T${tmsp}`
           const hasTrip = !_.isEmpty(data.route_plan)
-          const goodTrips = hasTrip ? getGoodTrips(data.route_plan.itineraries) : []
+          const goodTrips = hasTrip
+            ? getGoodTrips(data.route_plan.itineraries)
+            : []
 
-          if (
-            !loading &&
-            !error &&
-            hasTrip &&
-            hash !== itiHash
-          ) {
-
-            plan.setItineraryResult(
-              from,
-              to,
-              tmsp,
-              goodTrips,
-              itiHash
-            )
+          if (!loading && !error && hasTrip && hash !== itiHash) {
+            plan.setItineraryResult(from, to, tmsp, goodTrips, itiHash)
           }
-
           const pickedTrip = goodTrips[picked]
-
+          // console.log(planParams)
           return (
             <Box>
               <BoxTitle>GoTH</BoxTitle>
               <BoxContent>
-                <ODInput origin={from} destination={to} />
-                <PanelModeSelector
-                  mode={mode}
-                  setMode={mode => plan.setMode(mode)}
-                />
+                {!pickedTrip && (
+                  <Fragment>
+                    <ODInput origin={from} destination={to} />
+                    <PanelModeSelector
+                      mode={mode}
+                      setMode={mode => plan.setMode(mode)}
+                      timestamp={tmsp}
+                    />
+                  </Fragment>
+                )}
                 <BoxScrollOffset>
-                  <MutedHeader>Recommended routes</MutedHeader>
-                  {data && this.renderItineraryChoices(goodTrips)}
-                  {pickedTrip && <ItineraryDirection trip={pickedTrip} />}
+                  {!pickedTrip && (
+                    <Fragment>
+                      <MutedHeader>Recommended routes</MutedHeader>
+                      {data && this.renderItineraryChoices(goodTrips)}
+                    </Fragment>
+                  )}
+                  {pickedTrip && (
+                    <Fragment>
+                      <MutedHeader>
+                        <a onClick={() => plan.setPickedItinerary(-1)}>
+                        back</a>
+                      </MutedHeader>
+                      <ItineraryDirection trip={pickedTrip} />
+                    </Fragment>
+                  )}
                 </BoxScrollOffset>
               </BoxContent>
             </Box>

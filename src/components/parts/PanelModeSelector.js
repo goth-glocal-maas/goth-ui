@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { yellow, grayBackground } from "../../constants/color"
 import { TRANSPORT_MODES } from "../../constants/mode"
 import ModeIcon from "./ModeIcon"
+import { getHHMM } from "../../utils/fn";
 
 const TagButton = styled.div`
   a {
@@ -65,7 +66,7 @@ const PanelModeSelector = props => (
 
     <div className="control">
       <div className="tags has-addons">
-        <button className="">
+        <button className="" title={getHHMM(props.timestamp)}>
           <FontAwesomeIcon icon={["far", "clock"]} size="2x" />
           <span>Now</span>
         </button>

@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { red } from "../../constants/color"
 import _ from "lodash"
 import ModeIcon from "./ModeIcon"
+import { getHHMM } from '../../utils/fn'
 
 const PaddingBox = styled.div`
   padding: 2.5rem 1.5rem 1.5rem;
@@ -64,13 +65,6 @@ const Dot = styled.div`
     top: 0.5rem;
   }
 `
-
-const getHHMM = tmsp => {
-  const d = new Date(tmsp)
-  const hh = d.getHours()
-  const mm = d.getMinutes()
-  return `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
-}
 
 const ItineraryStep = props => {
   if (_.isEmpty(props)) {

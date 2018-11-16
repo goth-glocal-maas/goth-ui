@@ -7,6 +7,7 @@ import PlanContainer from "../unstated/plan"
 import ModeIcon from "./parts/ModeIcon"
 import { red, gray } from "../constants/color"
 import ItineraryStep from "./parts/ItineraryStep"
+import { getHHMM, sec2min } from '../utils/fn'
 
 const Card = styled.div`
   background: #fff;
@@ -60,7 +61,7 @@ const ItemLine = styled.span`
   display: block;
   width: 0;
   height: 100%;
-  border: 1px solid ${red};
+  border: 1px solid ${props => props.color};
   position: absolute;
   top: 0;
   left: 0;
@@ -71,8 +72,8 @@ const ItemLine = styled.span`
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: ${red};
-    border: 2px solid ${red};
+    background: ${props => props.color};
+    border: 2px solid ${props => props.color};
     position: absolute;
     left: -0.5rem;
   }
@@ -85,12 +86,24 @@ const ItemLine = styled.span`
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: ${red};
-    border: 2px solid ${red};
+    background: ${props => props.color};
+    border: 2px solid ${props => props.color};
     position: absolute;
     left: -0.5rem;
   }
   `}
+
+  :after {
+    content: "";
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: ${props => props.color};
+    border: 2px solid ${props => props.color};
+    position: absolute;
+    left: -0.5rem;
+  }
 
   :before {
     top: -1rem;
@@ -120,51 +133,29 @@ const ItemLine = styled.span`
 const ItemPrice = styled.div``
 
 const ItineraryDirection = props => {
+  const { trip } = props
   return (
     <Subscribe to={[PlanContainer]}>
       {plan => (
         <Card>
           <ItineraryStep />
           <Timeline>
-            <Item>
-              <ItemLine hasEndDot>
-                <span>12:00</span>
-                <span>12:05</span>
-              </ItemLine>
-              <div>
-                <ModeIcon mode="WALK" size="1x" />
-                &nbsp; 23 minutes
-              </div>
-              <ItemPrice>
-                <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
-                &nbsp; 40 THB
-              </ItemPrice>
-            </Item>
-            <Item>
-              <ItemLine>
-                <span>12:08</span>
-              </ItemLine>
-              <div className="info">
-                the best animation , the best toturials you would ever see .
-              </div>
-            </Item>
-            <Item>
-              <ItemLine hasEndDot>
-                <span>12:20</span>
-                <span>12:34</span>
-              </ItemLine>
-              <div>
-                <ModeIcon mode="BUS" size="1x" />
-                &nbsp; 50 minutes
-              </div>
-              <div className="info">
-                the best animation , the best toturials you would ever see .
-              </div>
-              <ItemPrice>
-                <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
-                &nbsp; 40 THB
-              </ItemPrice>
-            </Item>
+            {trip.legs.map((leg, index) => (
+              <Item key={`picked-trip-item-${index}`}>
+                <ItemLine color={leg.routeColor ? `#${leg.routeColor}` : red} hasEndDot={true} >
+                  <span>{getHHMM(leg.startTime)}</span>
+                  <span>{getHHMM(leg.endTime)}</span>
+                </ItemLine>
+                <div style={{color: leg.routeColor ? `#${leg.routeColor}` : red}}>
+                  <ModeIcon mode={leg.mode} size="2x" />
+                  &nbsp; {sec2min(leg.duration)} minutes
+                </div>
+                <ItemPrice>
+                  <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
+                  &nbsp; 40 THB
+                </ItemPrice>
+              </Item>
+            ))}
           </Timeline>
         </Card>
       )}

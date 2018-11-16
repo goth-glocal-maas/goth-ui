@@ -17,3 +17,12 @@ export const getGoodTrips = (ities, mode=0) => {
   if (mode !== 0) return ities
   return ities.filter(i => (i.endTime - i.startTime) / 60 / 1000 < 301)
 }
+
+export const getHHMM = tmsp => {
+  const d = new Date(tmsp)
+  const hh = d.getHours()
+  const mm = d.getMinutes()
+  return `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
+}
+
+export const sec2min = sec => (sec/60).toFixed()
