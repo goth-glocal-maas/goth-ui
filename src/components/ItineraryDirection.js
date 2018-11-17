@@ -7,7 +7,7 @@ import PlanContainer from "../unstated/plan"
 import ModeIcon from "./parts/ModeIcon"
 import { red, gray } from "../constants/color"
 import ItineraryStep from "./parts/ItineraryStep"
-import { getHHMM, sec2min } from '../utils/fn'
+import { getHHMM, sec2min } from "../utils/fn"
 
 const Card = styled.div`
   background: #fff;
@@ -77,25 +77,10 @@ const ItemLine = styled.span`
     position: absolute;
     left: -0.5rem;
   }
-  ${props =>
-    props.hasEndDot &&
-    `
-  :after {
-    content: "";
-    display: block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: ${props => props.color};
-    border: 2px solid ${props => props.color};
-    position: absolute;
-    left: -0.5rem;
-  }
-  `}
 
   :after {
     content: "";
-    display: block;
+    display: ${props => props.hasEndDot ? 'block': 'none'};
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -142,11 +127,16 @@ const ItineraryDirection = props => {
           <Timeline>
             {trip.legs.map((leg, index) => (
               <Item key={`picked-trip-item-${index}`}>
-                <ItemLine color={leg.routeColor ? `#${leg.routeColor}` : red} hasEndDot={true} >
+                <ItemLine
+                  color={leg.routeColor ? `#${leg.routeColor}` : red}
+                  hasEndDot
+                >
                   <span>{getHHMM(leg.startTime)}</span>
                   <span>{getHHMM(leg.endTime)}</span>
                 </ItemLine>
-                <div style={{color: leg.routeColor ? `#${leg.routeColor}` : red}}>
+                <div
+                  style={{ color: leg.routeColor ? `#${leg.routeColor}` : red }}
+                >
                   <ModeIcon mode={leg.mode} size="2x" />
                   &nbsp; {sec2min(leg.duration)} minutes
                 </div>

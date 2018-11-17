@@ -1,4 +1,5 @@
 import _ from "lodash"
+import moment from "moment-timezone"
 
 export const getCurrentTimeForPlan = init => {
   const now = _.isNaN(init) ? new Date() : new Date(+init)
@@ -11,7 +12,7 @@ export const getCurrentTimeForPlan = init => {
   }
 }
 
-export const getGoodTrips = (ities, mode=0) => {
+export const getGoodTrips = (ities, mode = 0) => {
   // NOTE: filter out any transit trip longer than 300 min;
   //       it's not possible in Phuket anyway
   if (mode !== 0) return ities
@@ -19,10 +20,9 @@ export const getGoodTrips = (ities, mode=0) => {
 }
 
 export const getHHMM = tmsp => {
-  const d = new Date(tmsp)
-  const hh = d.getHours()
-  const mm = d.getMinutes()
-  return `${hh < 10 ? `0${hh}` : hh}:${mm < 10 ? `0${mm}` : mm}`
+  return moment(tmsp)
+    .tz("Asia/Bangkok")
+    .format("hh:mm")
 }
 
-export const sec2min = sec => (sec/60).toFixed()
+export const sec2min = sec => (sec / 60).toFixed()

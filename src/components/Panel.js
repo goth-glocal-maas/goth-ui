@@ -79,16 +79,46 @@ class Panel extends Component {
     const hasData = from.length > 0 && to.length > 0
     const _from = from.join(",")
     const _to = to.join(",")
+    const _tmsp = search.split("ts=")[1]
     if (
       hasData &&
-      (params.from !== _from || params.to !== _to || +params.mode !== +mode)
+      (params.from !== _from ||
+        params.to !== _to ||
+        +params.mode !== +mode ||
+        +params.timestamp !== +_tmsp)
     ) {
-      const nUrl = `/p/${_from}/${_to}/${mode}?ts=${timestamp}`
+      const newTimestamp = _tmsp === undefined ? new Date().getTime() : +_tmsp
+      const nUrl = `/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`
       const currUrl = `${pathname}${search}`
       if (currUrl !== nUrl)
-        history.push(`/p/${_from}/${_to}/${mode}?ts=${timestamp}`)
+        history.push(`/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`)
     }
   }
+
+  /* componentWillMount() {
+    const {
+      location: { search },
+      match: { params },
+      plan
+    } = this.props
+
+    const { from, to, mode, timestamp } = plan.state
+    let tmsp = timestamp > 0 ? timestamp : new Date().getTime()
+    let md = mode
+
+    if (params.from && params.to && from.length === 0 && to.length === 0) {
+      const nFrom = params.from.split(",").map(i => +i)
+      const nTo = params.to.split(",").map(i => +i)
+      plan.setOD({ from: nFrom, to: nTo })
+    }
+    const urlTmsp = search.split("ts=")[1]
+    if (urlTmsp !== undefined)
+      plan.setTimestamp(+urlTmsp)
+    if (params.mode) {
+      plan.setMode(+params.mode)
+      md = +params.mode
+    }
+  } */
 
   renderItineraryChoices(trips) {
     if (trips.length === 0) return <Fragment />
@@ -121,22 +151,25 @@ class Panel extends Component {
     } = this.props
 
     const { from, to, mode, timestamp, hash, picked } = plan.state
-    let tmsp = timestamp > 0 ? timestamp : new Date().getTime()
+    // let tmsp = new Date().getTime()
     let md = mode
+    const _tmsp = search.split("ts=")[1]
+    console.log(tmsp, +_tmsp, timestamp)
+    let tmsp
+
+    if (+_tmsp === -1 || _tmsp === undefined) {
+      plan.setTimestamp(tmsp)
+      tmsp = new Date().getTime()
+    } else {
+      tmsp = +_tmsp
+    }
 
     if (params.from && params.to && from.length === 0 && to.length === 0) {
       const nFrom = params.from.split(",").map(i => +i)
       const nTo = params.to.split(",").map(i => +i)
       plan.setOD({ from: nFrom, to: nTo })
-      if (search) tmsp = search.split("ts=")[1]
-      if (params.mode) {
-        plan.setMode(+params.mode)
-        md = +params.mode
-      }
       return <p>Loading...</p>
     }
-
-    if (timestamp === -1) plan.setTimestamp(tmsp)
 
     const hasData = from.length > 0 && to.length > 0
     let planParams = getCurrentTimeForPlan(tmsp)
@@ -177,14 +210,14 @@ class Panel extends Component {
                   {!pickedTrip && (
                     <Fragment>
                       <MutedHeader>Recommended routes</MutedHeader>
+                      {/* TODO: add spinner */}
                       {data && this.renderItineraryChoices(goodTrips)}
                     </Fragment>
                   )}
                   {pickedTrip && (
                     <Fragment>
                       <MutedHeader>
-                        <a onClick={() => plan.setPickedItinerary(-1)}>
-                        back</a>
+                        <a onClick={() => plan.setPickedItinerary(-1)}>back</a>
                       </MutedHeader>
                       <ItineraryDirection trip={pickedTrip} />
                     </Fragment>
