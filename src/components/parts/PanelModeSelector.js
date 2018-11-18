@@ -69,7 +69,7 @@ const PanelModeSelector = props => (
       <div className="tags has-addons">
         <button className="" title={getHHMM(+props.timestamp)}>
           <FontAwesomeIcon icon={["far", "clock"]} size="2x" />
-          <span>Now</span>
+          <span>{getHHMM(+props.timestamp)}</span>
         </button>
       </div>
     </div>

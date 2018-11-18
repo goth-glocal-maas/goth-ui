@@ -222,15 +222,15 @@ class Map extends Component {
             <CanvasOverlay redraw={this._redrawCanvasOverlay} />
             {plan.state.from.length === 2 && (
               <MMarker
-                mode="BICYCLE"
-                color={color(7)}
+                mode="START"
+                color={color(8)}
                 lat={plan.state.from[0]}
                 lon={plan.state.from[1]}
               />
             )}
             {plan.state.to.length === 2 && (
               <MMarker
-                mode="BICYCLE"
+                mode="END"
                 color={color(8)}
                 lat={plan.state.to[0]}
                 lon={plan.state.to[1]}

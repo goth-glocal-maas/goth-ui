@@ -15,13 +15,12 @@ export const getGoodTrips = (ities, mode = 0) => {
   //       it's not possible in Phuket anyway
   console.log('getGoodTrip', ities)
   if (mode !== 0) return ities
-  if (!ities) return []
   return ities.filter(i => (i.endTime - i.startTime) / 60 / 1000 < 301)
 }
 
 export const getHHMM = tmsp => {
   const mTmsp = _.isNumber(tmsp) ? moment(+tmsp) : moment()
-  return mTmsp.tz("Asia/Bangkok").format("HH:MM")
+  return mTmsp.tz("Asia/Bangkok").format("HH:mm")
 }
 
 export const sec2min = sec => (sec / 60).toFixed()

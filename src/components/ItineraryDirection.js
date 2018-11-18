@@ -140,10 +140,10 @@ const ItineraryDirection = props => {
                   <ModeIcon mode={leg.mode} size="2x" />
                   &nbsp; {sec2min(leg.duration)} minutes
                 </div>
-                <ItemPrice>
+                {leg.mode === 'BUS' && (<ItemPrice>
                   <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
-                  &nbsp; 40 THB
-                </ItemPrice>
+                  &nbsp; 15 THB
+                </ItemPrice>)}
               </Item>
             ))}
           </Timeline>

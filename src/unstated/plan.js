@@ -29,19 +29,19 @@ class PlanContainer extends Container {
   }
 
   setOD = ({ from, to }) => {
-    this.setState({ from, to })
+    this.setState({ from, to, itineraries: [] })
   }
 
   setFrom = from => {
-    this.setState({ from })
+    this.setState({ from, itineraries: [] })
   }
 
   setTo = to => {
-    this.setState({ to })
+    this.setState({ to, itineraries: [] })
   }
 
   setMode = mode => {
-    this.setState({ mode })
+    this.setState({ mode, itineraries: [] })
   }
 
   setTimestamp = timestamp => {
