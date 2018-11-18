@@ -68,6 +68,10 @@ const BoxScrollOffset = styled.div`
 `
 
 class Panel extends Component {
+  state = {
+    initTmsp: 0
+  }
+
   componentWillReceiveProps(nextProps) {
     /* This update URL to current one, so that user can copy and share */
     const {
@@ -143,31 +147,46 @@ class Panel extends Component {
     )
   }
 
-  render() {
+  componentWillMount() {
+    // grab info from URL to UNSTATED
     const {
       location: { search },
       match: { params },
       plan
     } = this.props
-
-    const { from, to, mode, timestamp, hash, picked } = plan.state
-    // let tmsp = new Date().getTime()
-    let md = mode
+    const now = new Date().getTime()
     const _tmsp = search.split("ts=")[1]
-    console.log(tmsp, +_tmsp, timestamp)
     let tmsp
-
     if (+_tmsp === -1 || _tmsp === undefined) {
-      plan.setTimestamp(tmsp)
-      tmsp = new Date().getTime()
+      tmsp = now
     } else {
       tmsp = +_tmsp
     }
+    // no need to set in UNSTATED since when itinerary is up,
+    // that would be updated automatically
+    this.setState({ initTmsp: tmsp })
 
+    const { from, to } = plan.state
     if (params.from && params.to && from.length === 0 && to.length === 0) {
       const nFrom = params.from.split(",").map(i => +i)
       const nTo = params.to.split(",").map(i => +i)
       plan.setOD({ from: nFrom, to: nTo })
+    }
+    if (params.mode) plan.setMode(params.mode)
+  }
+
+  render() {
+    const {
+      match: { params },
+      plan
+    } = this.props
+
+    const { from, to, mode, timestamp, hash, picked } = plan.state
+    let md = mode
+
+    const tmsp = timestamp > 0 ? timestamp : this.state.initTmsp
+
+    if (params.from && params.to && from.length === 0 && to.length === 0) {
       return <p>Loading...</p>
     }
 
@@ -182,7 +201,7 @@ class Panel extends Component {
         {({ loading, error, data }) => {
           // console.log(loading, error, data)
           const itiHash = `${planParams.from}${planParams.to}${md}T${tmsp}`
-          const hasTrip = !_.isEmpty(data.route_plan)
+          const hasTrip = hasData && !_.isEmpty(data.route_plan)
           const goodTrips = hasTrip
             ? getGoodTrips(data.route_plan.itineraries)
             : []
@@ -191,7 +210,6 @@ class Panel extends Component {
             plan.setItineraryResult(from, to, tmsp, goodTrips, itiHash)
           }
           const pickedTrip = goodTrips[picked]
-          // console.log(planParams)
           return (
             <Box>
               <BoxTitle>GoTH</BoxTitle>
@@ -211,7 +229,7 @@ class Panel extends Component {
                     <Fragment>
                       <MutedHeader>Recommended routes</MutedHeader>
                       {/* TODO: add spinner */}
-                      {data && this.renderItineraryChoices(goodTrips)}
+                      {goodTrips && this.renderItineraryChoices(goodTrips)}
                     </Fragment>
                   )}
                   {pickedTrip && (

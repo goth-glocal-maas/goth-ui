@@ -125,7 +125,7 @@ const ItineraryDirection = props => {
         <Card>
           <ItineraryStep />
           <Timeline>
-            {trip.legs.map((leg, index) => (
+            {trip.legs && trip.legs.map((leg, index) => (
               <Item key={`picked-trip-item-${index}`}>
                 <ItemLine
                   color={leg.routeColor ? `#${leg.routeColor}` : red}

@@ -44,9 +44,8 @@ class PlanContainer extends Container {
     this.setState({ mode })
   }
 
-  setTimestamp = async timestamp => {
-    await this.setState({ timestamp })
-    return timestamp
+  setTimestamp = timestamp => {
+    this.setState({ timestamp })
   }
 }
 
