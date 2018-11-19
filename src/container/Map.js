@@ -73,6 +73,7 @@ class Map extends Component {
     mapStyle: null,
     goodTrips: [],
     hash: '',
+    picked: -1,
   }
 
   constructor(props) {
@@ -97,9 +98,11 @@ class Map extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { hash, itineraries } = nextProps.plan.state
-    if (hash !== this.state.hash) {
-      this.setState({ hash, goodTrips: getGoodTrips(itineraries) })
+    const { hash, picked, itineraries } = nextProps.plan.state
+    if (hash !== this.state.hash || picked !== this.state.picked) {
+      const goodTrips =  getGoodTrips(itineraries)
+      let visibleTrips = picked < 0 ? goodTrips : goodTrips.filter((ele, ind) => ind === picked)
+      this.setState({ hash, picked, goodTrips, visibleTrips })
     }
   }
 
@@ -148,10 +151,10 @@ class Map extends Component {
 
   _redrawSVGOverlay({ project }) {
     // Take all itineraries and start drawing leg
-    const { goodTrips } = this.state
+    const { visibleTrips } = this.state
     return (
       <g>
-        {goodTrips.map((itinerary, index) =>
+        {visibleTrips.map((itinerary, index) =>
           this._redrawItinerary(project, itinerary, index)
         )}
       </g>
@@ -169,9 +172,10 @@ class Map extends Component {
   }
 
   _redrawCanvasOverlay({ ctx, width, height, project }) {
-    const { goodTrips } = this.state
+    const { visibleTrips } = this.state
+
     ctx.clearRect(0, 0, width, height)
-    goodTrips.map((itinerary, _) => {
+    visibleTrips.map((itinerary, _) => {
       itinerary.legs.map((leg, index) => {
         // draw start & end of every legs
         const se = [[leg.from.lon, leg.from.lat], [leg.to.lon, leg.to.lat]]

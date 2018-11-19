@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment-timezone"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import { yellow, grayBackground } from "../../constants/color"

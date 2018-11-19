@@ -72,81 +72,6 @@ class Panel extends Component {
     initTmsp: 0
   }
 
-  componentWillReceiveProps(nextProps) {
-    /* This update URL to current one, so that user can copy and share */
-    const {
-      history,
-      location: { pathname, search },
-      match: { params }
-    } = nextProps
-    const { from, to, mode, timestamp } = nextProps.plan.state
-    const hasData = from.length > 0 && to.length > 0
-    const _from = from.join(",")
-    const _to = to.join(",")
-    const _tmsp = search.split("ts=")[1]
-    if (
-      hasData &&
-      (params.from !== _from ||
-        params.to !== _to ||
-        +params.mode !== +mode ||
-        +params.timestamp !== +_tmsp)
-    ) {
-      const newTimestamp = _tmsp === undefined ? new Date().getTime() : +_tmsp
-      const nUrl = `/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`
-      const currUrl = `${pathname}${search}`
-      if (currUrl !== nUrl)
-        history.push(`/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`)
-    }
-  }
-
-  /* componentWillMount() {
-    const {
-      location: { search },
-      match: { params },
-      plan
-    } = this.props
-
-    const { from, to, mode, timestamp } = plan.state
-    let tmsp = timestamp > 0 ? timestamp : new Date().getTime()
-    let md = mode
-
-    if (params.from && params.to && from.length === 0 && to.length === 0) {
-      const nFrom = params.from.split(",").map(i => +i)
-      const nTo = params.to.split(",").map(i => +i)
-      plan.setOD({ from: nFrom, to: nTo })
-    }
-    const urlTmsp = search.split("ts=")[1]
-    if (urlTmsp !== undefined)
-      plan.setTimestamp(+urlTmsp)
-    if (params.mode) {
-      plan.setMode(+params.mode)
-      md = +params.mode
-    }
-  } */
-
-  renderItineraryChoices(trips) {
-    if (trips.length === 0) return <Fragment />
-
-    const startTimes = trips.map(i => i.startTime)
-    const endTimes = trips.map(i => i.endTime)
-    const minStartTime = _.min(startTimes)
-    const maxEndTime = _.max(endTimes)
-
-    return (
-      <Fragment>
-        {trips.map((one, index) => (
-          <ItineraryChoiceItem
-            key={`itiCI-${index}`}
-            index={index}
-            itinerary={one}
-            minStartTime={minStartTime}
-            maxEndTime={maxEndTime}
-          />
-        ))}
-      </Fragment>
-    )
-  }
-
   componentWillMount() {
     // grab info from URL to UNSTATED
     const {
@@ -173,6 +98,56 @@ class Panel extends Component {
       plan.setOD({ from: nFrom, to: nTo })
     }
     if (params.mode) plan.setMode(params.mode)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    /* This update URL to current one, so that user can copy and share */
+    const {
+      history,
+      location: { pathname, search },
+      match: { params }
+    } = nextProps
+    const { from, to, mode } = nextProps.plan.state
+    const hasData = from.length > 0 && to.length > 0
+    const _from = from.join(",")
+    const _to = to.join(",")
+    const _tmsp = search.split("ts=")[1]
+    if (
+      hasData &&
+      (params.from !== _from ||
+        params.to !== _to ||
+        +params.mode !== +mode ||
+        +params.timestamp !== +_tmsp)
+    ) {
+      const newTimestamp = _tmsp === undefined ? new Date().getTime() : +_tmsp
+      const nUrl = `/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`
+      const currUrl = `${pathname}${search}`
+      if (currUrl !== nUrl)
+        history.push(`/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`)
+    }
+  }
+
+  renderItineraryChoices(trips) {
+    if (trips.length === 0) return <Fragment />
+
+    const startTimes = trips.map(i => i.startTime)
+    const endTimes = trips.map(i => i.endTime)
+    const minStartTime = _.min(startTimes)
+    const maxEndTime = _.max(endTimes)
+
+    return (
+      <Fragment>
+        {trips.map((one, index) => (
+          <ItineraryChoiceItem
+            key={`itiCI-${index}`}
+            index={index}
+            itinerary={one}
+            minStartTime={minStartTime}
+            maxEndTime={maxEndTime}
+          />
+        ))}
+      </Fragment>
+    )
   }
 
   render() {
