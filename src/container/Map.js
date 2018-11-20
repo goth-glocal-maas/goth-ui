@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import ReactMapGL, {
-  // LinearInterpolator,
+  LinearInterpolator,
   SVGOverlay,
   CanvasOverlay
 } from "react-map-gl"
@@ -13,6 +13,8 @@ import { scaleOrdinal } from "d3-scale"
 import { schemeCategory10 } from "d3-scale-chromatic"
 import { rgb } from "d3-color"
 import { Subscribe } from "unstated"
+import bbox from "@turf/bbox"
+import WebMercatorViewport from "viewport-mercator-project"
 
 import PlanContainer from "../unstated/plan"
 
@@ -72,8 +74,9 @@ class Map extends Component {
     defaultMapStyle: null,
     mapStyle: null,
     goodTrips: [],
-    hash: '',
-    picked: -1,
+    visibleTrips: [],
+    hash: "",
+    picked: -1
   }
 
   constructor(props) {
@@ -99,10 +102,33 @@ class Map extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { hash, picked, itineraries } = nextProps.plan.state
+    let newState = {}
     if (hash !== this.state.hash || picked !== this.state.picked) {
-      const goodTrips =  getGoodTrips(itineraries)
-      let visibleTrips = picked < 0 ? goodTrips : goodTrips.filter((ele, ind) => ind === picked)
-      this.setState({ hash, picked, goodTrips, visibleTrips })
+      const goodTrips = getGoodTrips(itineraries)
+      let visibleTrips =
+        picked < 0 ? goodTrips : goodTrips.filter((ele, ind) => ind === picked)
+      newState = { hash, picked, goodTrips, visibleTrips }
+      if (picked !== -1 && goodTrips.length > 0) {
+        const allLegs = goodTrips[0].legs.map((leg, ind) =>
+          polyline.decode(leg.legGeometry.points)
+        )
+        const polygeo = { type: "MultiLineString", coordinates: allLegs }
+        const [minLat, minLng, maxLat, maxLng] = bbox(polygeo)
+        const currViewport = new WebMercatorViewport(this.state.viewport)
+        const bbound = [[minLng, minLat], [maxLng, maxLat]]
+        // TODO: this doesn't consider "Panel" at all, so half is behind panel
+        const { longitude, latitude, zoom } = currViewport.fitBounds(bbound, {
+          padding: 40
+        })
+        const viewport = {
+          ...this.state.viewport,
+          longitude,
+          latitude,
+          zoom
+        }
+        newState = { ...newState, viewport }
+      }
+      this.setState(newState)
     }
   }
 
@@ -199,7 +225,7 @@ class Map extends Component {
 
   _onClick = ({ lngLat }) => {
     this.setState({ tapLocation: lngLat })
-    setTimeout(() => this.setState({ tapLocation: []}), 3000)
+    setTimeout(() => this.setState({ tapLocation: [] }), 3000)
   }
 
   _onTapToMapCloseClick() {

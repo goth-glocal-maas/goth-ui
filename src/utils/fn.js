@@ -5,15 +5,14 @@ export const getCurrentTimeForPlan = tmsp => {
   let now = _.isNumber(tmsp) ? moment(+tmsp) : moment()
   now = now.tz("Asia/Bangkok")
   return {
-    date: now.format('MM-DD-YYYY'),
-    time: now.format('hh:mmA')
+    date: now.format("MM-DD-YYYY"),
+    time: now.format("hh:mmA")
   }
 }
 
 export const getGoodTrips = (ities, mode = 0) => {
   // NOTE: filter out any transit trip longer than 300 min;
   //       it's not possible in Phuket anyway
-  console.log('getGoodTrip', ities)
   if (mode !== 0) return ities
   return ities.filter(i => (i.endTime - i.startTime) / 60 / 1000 < 301)
 }
