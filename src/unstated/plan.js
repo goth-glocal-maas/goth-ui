@@ -1,10 +1,11 @@
 import { Container } from "unstated"
+import moment from "moment-timezone"
 // import { Provider, Subscribe, Container } from 'unstated'
 
 class PlanContainer extends Container {
   state = {
-    from: [],  // latlon
-    to: [],    // latlon
+    from: [], // latlon
+    to: [], // latlon
     timestamp: -1,
     picked: -1,
     itineraries: [],
@@ -46,6 +47,22 @@ class PlanContainer extends Container {
 
   setTimestamp = timestamp => {
     this.setState({ timestamp })
+  }
+
+  setTime = timeDelta => {
+    let { timestamp } = this.state
+    let changed = false
+    if (timestamp === -1) timestamp = new Date().getTime()
+    let mnt = moment(timestamp).tz("Asia/Bangkok")
+    if (timeDelta.add !== undefined) {
+      const { key, delta } = timeDelta.add
+      mnt = mnt.add(delta, key)
+      changed = true
+    } else {
+      mnt = mnt.set(timeDelta)
+      changed = true
+    }
+    if (changed) this.setState({ timestamp: +mnt.format("x") })
   }
 }
 

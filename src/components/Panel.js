@@ -195,6 +195,7 @@ class Panel extends Component {
                     <PanelModeSelector
                       mode={mode}
                       setMode={mode => plan.setMode(mode)}
+                      setTime={timeDelta => plan.setTime(timeDelta)}
                       timestamp={tmsp}
                     />
                   </Fragment>

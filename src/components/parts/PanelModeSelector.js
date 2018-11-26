@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { yellow, grayBackground } from "../../constants/color"
 import { TRANSPORT_MODES } from "../../constants/mode"
 import ModeIcon from "./ModeIcon"
-import { getHHMM } from "../../utils/fn";
+import { getHHMM, getHH, getMM } from "../../utils/fn"
+import TimePicker from "./TimePicker"
 
 const TagButton = styled.div`
   a {
@@ -47,6 +48,12 @@ const TagButton = styled.div`
   }
 `
 
+const TagWithAddon = styled.div`
+  height: 30px;
+  display: flex;
+  align-items: center;
+`
+
 const PanelModeSelector = props => (
   <TagButton className="field is-grouped is-grouped-multiline">
     {TRANSPORT_MODES.map((mode, i) => {
@@ -55,7 +62,9 @@ const PanelModeSelector = props => (
           <div className="tags has-addons">
             <a
               onClick={() => props.setMode(i)}
-              className={`tag ${i === +props.mode ? "is-selected" : "is-white"}`}
+              className={`tag ${
+                i === +props.mode ? "is-selected" : "is-white"
+              }`}
             >
               <ModeIcon mode={mode} size="2x" />
             </a>
@@ -65,12 +74,16 @@ const PanelModeSelector = props => (
     })}
 
     <div className="control">
-      <div className="tags has-addons">
-        <button className="" title={getHHMM(+props.timestamp)}>
-          <FontAwesomeIcon icon={["far", "clock"]} size="2x" />
-          <span>{getHHMM(+props.timestamp)}</span>
-        </button>
-      </div>
+      <TagWithAddon className="tags has-addons">
+        <FontAwesomeIcon icon={["far", "clock"]} size="2x" />
+        <TimePicker
+          changeTime={(timeDelta) => {
+            props.setTime(timeDelta)
+          }}
+          initHours={getHH(props.timestamp)}
+          initMin={getMM(props.timestamp)}
+        />
+      </TagWithAddon>
     </div>
   </TagButton>
 )

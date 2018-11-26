@@ -22,4 +22,14 @@ export const getHHMM = tmsp => {
   return mTmsp.tz("Asia/Bangkok").format("HH:mm")
 }
 
+export const getHH = tmsp => {
+  const mTmsp = _.isNumber(tmsp) ? moment(+tmsp) : moment()
+  return mTmsp.tz("Asia/Bangkok").format("HH")
+}
+
+export const getMM = tmsp => {
+  const mTmsp = _.isNumber(tmsp) ? moment(+tmsp) : moment()
+  return mTmsp.tz("Asia/Bangkok").format("mm")
+}
+
 export const sec2min = sec => (sec / 60).toFixed()
