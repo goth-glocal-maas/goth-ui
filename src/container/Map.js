@@ -254,16 +254,26 @@ class Map extends Component {
               <MMarker
                 mode="START"
                 color={color(8)}
+                draggable
                 lat={plan.state.from[0]}
                 lon={plan.state.from[1]}
+                // onDragStart={this._onMarkerDragStart}
+                // onDrag={this._onMarkerDrag}
+                onDragEnd={(evt) => {
+                  plan.setFrom([evt.lngLat[1], evt.lngLat[0]])
+                }}
               />
             )}
             {plan.state.to.length === 2 && (
               <MMarker
                 mode="END"
                 color={color(8)}
+                draggable
                 lat={plan.state.to[0]}
                 lon={plan.state.to[1]}
+                onDragEnd={(evt) => {
+                  plan.setTo([evt.lngLat[1], evt.lngLat[0]])
+                }}
               />
             )}
             <TapToMap
