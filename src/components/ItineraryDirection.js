@@ -15,7 +15,7 @@ const Card = styled.div`
   padding: 1.3rem;
   border-radius: 0.5rem;
 
-  margin: 0 0 1rem;
+  margin: 0.4rem 0 0;
   transition: background-color 200ms ease;
 `
 

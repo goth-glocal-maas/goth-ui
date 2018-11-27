@@ -72,7 +72,7 @@ const ItineraryStep = props => {
   }
   const {
     minStartTime,
-    maxEndTime,
+    // maxEndTime,
     maxPercent,
     itinerary: { startTime, endTime, legs }
   } = props

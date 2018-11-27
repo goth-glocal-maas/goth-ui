@@ -16,30 +16,27 @@ import { TRANSPORT_MODES } from "../constants/mode"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const Box = styled.div`
-  width: 100%
+  width: 100%;
   max-width: 360px;
-  max-height: calc(100% - 10px); // 100vh;
+  height: 100vh;
 
-  position: fixed;
-  left: 5px;
-  top: 5px;
+  // position: fixed;
+  // left: 5px;
+  // top: 5px;
   z-index: 3;  // mapbox logo on z-index 2
 
   // margin: 0.5rem;
-  background: white;
+  // background: white;
 
   box-shadow: 1.5px 2px 2px 0 rgba(0,0,0,.2);
   display: flex;
   flex-direction: column;
 
   @media (max-width: 450px) {
-    width: 98%;
-    height: 50vh;
+    width: 100%;
+    max-width: 100%;
+    height: 60vh;
 
-    top: 45vh;
-    left: 5px;
-    width: calc(100% - 10px);
-    max-width: 450px;
     box-shadow: 1px 1px 3px rgba(0,0,0,.2);
   }
 `
@@ -53,7 +50,7 @@ const BoxTitle = styled.div`
 `
 
 const BoxContent = styled.div`
-  padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+  padding: 0.5rem 0.5rem 1rem 1.5rem;
   background: ${grayBackground};
 
   overflow-y: auto;
@@ -193,7 +190,10 @@ class Panel extends Component {
         {({ loading, error, data }) => {
           // console.log(loading, error, data)
           const itiHash = `${planParams.from}${planParams.to}${md}T${tmsp}`
-          const hasTrip = hasData && !_.isEmpty(data.route_plan)
+          const hasTrip =
+            hasData &&
+            !_.isEmpty(data.route_plan) &&
+            data.route_plan.itineraries
           const goodTrips = hasTrip
             ? getGoodTrips(data.route_plan.itineraries)
             : []
@@ -217,34 +217,40 @@ class Panel extends Component {
                     />
                   </Fragment>
                 )}
-                <BoxScrollOffset>
-                  {!pickedTrip && (
-                    <Fragment>
-                      <MutedHeader>
-                        <span>Recommended routes</span>
-                        {loading && (
-                          <FontAwesomeIcon icon="cog" size="1x" spin />
-                        )}
-                      </MutedHeader>
-                      {goodTrips && this.renderItineraryChoices(goodTrips)}
-                    </Fragment>
-                  )}
-                  {!loading && goodTrips.length === 0 && (
-                    <EmptyDiv>
-                      <FontAwesomeIcon icon="exclamation-triangle" size="1x" />
-                      &nbsp;
-                      There is no route.
-                    </EmptyDiv>
-                  )}
-                  {pickedTrip && (
-                    <Fragment>
-                      <MutedHeader>
-                        <a onClick={() => plan.setPickedItinerary(-1)}>back</a>
-                      </MutedHeader>
-                      <ItineraryDirection trip={pickedTrip} />
-                    </Fragment>
-                  )}
-                </BoxScrollOffset>
+                {planParams.from && planParams.to && (
+                  <BoxScrollOffset>
+                    {!pickedTrip && (
+                      <Fragment>
+                        <MutedHeader>
+                          <span>Recommended routes</span>
+                          {loading && (
+                            <FontAwesomeIcon icon="cog" size="1x" spin />
+                          )}
+                        </MutedHeader>
+                        {goodTrips && this.renderItineraryChoices(goodTrips)}
+                      </Fragment>
+                    )}
+                    {!loading && goodTrips.length === 0 && (
+                      <EmptyDiv>
+                        <FontAwesomeIcon
+                          icon="exclamation-triangle"
+                          size="1x"
+                        />
+                        &nbsp; There is no route.
+                      </EmptyDiv>
+                    )}
+                    {pickedTrip && (
+                      <Fragment>
+                        <MutedHeader>
+                          <a onClick={() => plan.setPickedItinerary(-1)}>
+                            back
+                          </a>
+                        </MutedHeader>
+                        <ItineraryDirection trip={pickedTrip} />
+                      </Fragment>
+                    )}
+                  </BoxScrollOffset>
+                )}
               </BoxContent>
             </Box>
           )

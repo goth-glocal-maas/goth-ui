@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { yellow, grayBackground } from "../../constants/color"
 import { TRANSPORT_MODES } from "../../constants/mode"
 import ModeIcon from "./ModeIcon"
-import { getHHMM, getHH, getMM } from "../../utils/fn"
+import { getHH, getMM } from "../../utils/fn"
 import TimePicker from "./TimePicker"
 
 const TagButton = styled.div`

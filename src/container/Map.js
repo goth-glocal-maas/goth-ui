@@ -1,9 +1,10 @@
 import React, { Component } from "react"
 import ReactMapGL, {
-  LinearInterpolator,
+  // LinearInterpolator,
   SVGOverlay,
   CanvasOverlay
 } from "react-map-gl"
+import { Query } from "react-apollo"
 import { fromJS } from "immutable"
 import styled from "styled-components"
 import axios from "axios"
@@ -15,6 +16,7 @@ import { rgb } from "d3-color"
 import { Subscribe } from "unstated"
 import bbox from "@turf/bbox"
 import WebMercatorViewport from "viewport-mercator-project"
+import geoViewport from "@mapbox/geo-viewport"
 
 import PlanContainer from "../unstated/plan"
 
@@ -25,13 +27,19 @@ import { MODE_GL_STYLES } from "../constants/mode"
 import { getGoodTrips } from "../utils/fn"
 
 import alphaify from "../utils/alphaify"
+// import StopsOverlay from "../components/map/StopsOverlay"
+import { AVAILABLE_STOPS_QUERY } from "../constants/GraphQLCmd"
 
 const FullPageBox = styled.div`
   height: 100vh;
   z-index: 1;
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+
+  @media (max-width: 450px) {
+    flex-direction: column-reverse;
+  }
 `
 
 function round(x, n) {
@@ -76,7 +84,8 @@ class Map extends Component {
     goodTrips: [],
     visibleTrips: [],
     hash: "",
-    picked: -1
+    picked: -1,
+    stopsInView: []
   }
 
   constructor(props) {
@@ -233,8 +242,25 @@ class Map extends Component {
   }
 
   render() {
-    const { mapStyle, tapLocation } = this.state
+    const { mapStyle, tapLocation, viewport } = this.state
     const { plan } = this.props
+
+    const { latitude, longitude, zoom, width, height } = viewport
+    const skipStopQuery =
+      width === undefined || height === undefined || zoom < 14
+    console.log("skipStopQuery", skipStopQuery, width, height, zoom)
+    const [minLon, minLat, maxLon, maxLat] = geoViewport.bounds(
+      [longitude, latitude],
+      zoom,
+      [width, height]
+    )
+    const stopsQuery = {
+      minLat,
+      minLon,
+      maxLat,
+      maxLon
+    }
+
     return (
       <FullPageBox>
         <Panel {...this.props} />
@@ -248,6 +274,19 @@ class Map extends Component {
             height="100%"
             onClick={this._onClick}
           >
+            <Query
+              query={AVAILABLE_STOPS_QUERY}
+              variables={stopsQuery}
+              skip={skipStopQuery}
+            >
+              {({ loading, error, data }) => {
+                console.log('stop query : ', stopsQuery, loading, error, data)
+                if (loading || error) return <React.Fragment />
+                if (data && data.stops.length === 0) return <React.Fragment />
+                console.log('stop : ', data, viewport)
+                return <React.Fragment />
+              }}
+            </Query>
             <SVGOverlay redraw={this._redrawSVGOverlay} />
             <CanvasOverlay redraw={this._redrawCanvasOverlay} />
             {plan.state.from.length === 2 && (
@@ -259,7 +298,7 @@ class Map extends Component {
                 lon={plan.state.from[1]}
                 // onDragStart={this._onMarkerDragStart}
                 // onDrag={this._onMarkerDrag}
-                onDragEnd={(evt) => {
+                onDragEnd={evt => {
                   plan.setFrom([evt.lngLat[1], evt.lngLat[0]])
                 }}
               />
@@ -271,7 +310,7 @@ class Map extends Component {
                 draggable
                 lat={plan.state.to[0]}
                 lon={plan.state.to[1]}
-                onDragEnd={(evt) => {
+                onDragEnd={evt => {
                   plan.setTo([evt.lngLat[1], evt.lngLat[0]])
                 }}
               />
