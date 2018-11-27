@@ -15,7 +15,8 @@ import {
   faSync,
   faPlayCircle,
   faCog,
-  faEllipsisV
+  faEllipsisV,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons"
 import {
   faClock as farFaClock,
@@ -37,6 +38,7 @@ library.add(faSync)
 library.add(faPlayCircle)
 library.add(faCog)
 library.add(faEllipsisV)
+library.add(faExclamationTriangle)
 
 library.add(farFaClock)
 library.add(farFaMoneyBillAlt)

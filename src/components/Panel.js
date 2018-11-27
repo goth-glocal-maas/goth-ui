@@ -13,6 +13,7 @@ import PanelModeSelector from "./parts/PanelModeSelector"
 import { ROUTEPLAN_QUERY } from "../constants/GraphQLCmd"
 import { getCurrentTimeForPlan, getGoodTrips } from "../utils/fn"
 import { TRANSPORT_MODES } from "../constants/mode"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const Box = styled.div`
   width: 100%
@@ -61,10 +62,26 @@ const BoxContent = styled.div`
 const MutedHeader = styled.p`
   color: #888;
   font-size: 1.3rem;
+  display: flex;
+  justify-content: space-between;
 `
 
 const BoxScrollOffset = styled.div`
   padding-right: 1rem;
+`
+
+const EmptyDiv = styled.div`
+  background: #fff;
+  box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.2);
+  padding: 1.3rem;
+  border-radius: 0.5rem;
+
+  margin: 0 0 1rem;
+  transition: background-color 200ms ease;
+
+  :hover {
+    background: #fef0f0;
+  }
 `
 
 class Panel extends Component {
@@ -203,10 +220,21 @@ class Panel extends Component {
                 <BoxScrollOffset>
                   {!pickedTrip && (
                     <Fragment>
-                      <MutedHeader>Recommended routes</MutedHeader>
-                      {/* TODO: add spinner */}
+                      <MutedHeader>
+                        <span>Recommended routes</span>
+                        {loading && (
+                          <FontAwesomeIcon icon="cog" size="1x" spin />
+                        )}
+                      </MutedHeader>
                       {goodTrips && this.renderItineraryChoices(goodTrips)}
                     </Fragment>
+                  )}
+                  {!loading && goodTrips.length === 0 && (
+                    <EmptyDiv>
+                      <FontAwesomeIcon icon="exclamation-triangle" size="1x" />
+                      &nbsp;
+                      There is no route.
+                    </EmptyDiv>
                   )}
                   {pickedTrip && (
                     <Fragment>
