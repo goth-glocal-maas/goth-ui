@@ -19,18 +19,11 @@ const Box = styled.div`
   width: 100%;
   max-width: 360px;
   height: 100vh;
-
-  // position: fixed;
-  // left: 5px;
-  // top: 5px;
   z-index: 3;  // mapbox logo on z-index 2
-
-  // margin: 0.5rem;
-  // background: white;
-
   box-shadow: 1.5px 2px 2px 0 rgba(0,0,0,.2);
   display: flex;
   flex-direction: column;
+  transition: transform 0.5s linear;
 
   @media (max-width: 450px) {
     width: 100%;

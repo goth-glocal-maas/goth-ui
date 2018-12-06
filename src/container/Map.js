@@ -1,8 +1,9 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import ReactMapGL, {
   // LinearInterpolator,
   SVGOverlay,
-  CanvasOverlay
+  CanvasOverlay,
+  Popup
 } from "react-map-gl"
 import { Query } from "react-apollo"
 import { fromJS } from "immutable"
@@ -22,12 +23,11 @@ import PlanContainer from "../unstated/plan"
 
 import Panel from "../components/Panel"
 import MMarker from "../components/map/Marker"
-import TapToMap from "../components/map/TapToMap"
+import StopMarker from "../components/map/StopMarker"
 import { MODE_GL_STYLES } from "../constants/mode"
 import { getGoodTrips } from "../utils/fn"
 
 import alphaify from "../utils/alphaify"
-// import StopsOverlay from "../components/map/StopsOverlay"
 import { AVAILABLE_STOPS_QUERY } from "../constants/GraphQLCmd"
 
 const FullPageBox = styled.div`
@@ -39,6 +39,21 @@ const FullPageBox = styled.div`
 
   @media (max-width: 450px) {
     flex-direction: column-reverse;
+  }
+`
+
+const StyledUL = styled.ul`
+  display: flex;
+  flex-direction: row;
+  font-size: 1.3rem;
+
+  li {
+    display: block;
+    width: 10rem;
+  }
+
+  li a {
+    width: 100%;
   }
 `
 
@@ -77,7 +92,6 @@ class Map extends Component {
       //   around: [event.offsetCenter.x, event.offsetCenter.y]
       // }),
       transitionDuration: 200,
-      tapLocation: []
     },
     defaultMapStyle: null,
     mapStyle: null,
@@ -85,7 +99,8 @@ class Map extends Component {
     visibleTrips: [],
     hash: "",
     picked: -1,
-    stopsInView: []
+    stopsInView: [],
+    popupInfo: null
   }
 
   constructor(props) {
@@ -94,6 +109,7 @@ class Map extends Component {
     this._redrawCanvasOverlay = this._redrawCanvasOverlay.bind(this)
     this._redrawSVGOverlay = this._redrawSVGOverlay.bind(this)
     this._redrawItinerary = this._redrawItinerary.bind(this)
+    this._renderPopup = this._renderPopup.bind(this)
   }
 
   componentDidMount() {
@@ -230,35 +246,70 @@ class Map extends Component {
     }
   }
 
+  _renderPopup() {
+    const { plan } = this.props
+    const { popupInfo } = this.state
+    return (
+      popupInfo && (
+        <Popup
+          tipSize={5}
+          anchor="bottom"
+          longitude={popupInfo.lon}
+          latitude={popupInfo.lat}
+          offsetTop={popupInfo.id ? -10 : 0}
+          closeOnClick={false}
+          onClose={() => this.setState({ popupInfo: null })}
+        >
+          {popupInfo.id}
+          <StyledUL>
+            <li
+              onClick={() => {
+                this.setState({ popupInfo: null })
+                plan.setFrom([popupInfo.lat, popupInfo.lon])
+              }}
+            >
+              <a>From here</a>
+            </li>
+            <li
+              onClick={() => {
+                this.setState({ popupInfo: null })
+                plan.setTo([popupInfo.lat, popupInfo.lon])
+              }}
+            >
+              <a>To here</a>
+            </li>
+          </StyledUL>
+        </Popup>
+      )
+    )
+  }
+
   _onViewportChange = viewport => this.setState({ viewport })
 
   _onClick = ({ lngLat }) => {
-    this.setState({ tapLocation: lngLat })
-    setTimeout(() => this.setState({ tapLocation: [] }), 3000)
-  }
-
-  _onTapToMapCloseClick() {
-    this.setState({ tapLocation: [] })
+    this.setState({
+      popupInfo: { lat: lngLat[1], lon: lngLat[0] }
+    })
   }
 
   render() {
-    const { mapStyle, tapLocation, viewport } = this.state
+    const { mapStyle, viewport } = this.state
     const { plan } = this.props
 
     const { latitude, longitude, zoom, width, height } = viewport
     const skipStopQuery =
-      width === undefined || height === undefined || zoom < 14
-    console.log("skipStopQuery", skipStopQuery, width, height, zoom)
+      width === undefined || height === undefined || zoom < 13
+    // console.log("skipStopQuery", skipStopQuery, width, height, zoom)
     const [minLon, minLat, maxLon, maxLat] = geoViewport.bounds(
       [longitude, latitude],
       zoom,
       [width, height]
     )
     const stopsQuery = {
-      minLat,
-      minLon,
-      maxLat,
-      maxLon
+      minLat: +minLat.toFixed(5),
+      minLon: +minLon.toFixed(5),
+      maxLat: +maxLat.toFixed(5),
+      maxLon: +maxLon.toFixed(5)
     }
 
     return (
@@ -274,19 +325,6 @@ class Map extends Component {
             height="100%"
             onClick={this._onClick}
           >
-            <Query
-              query={AVAILABLE_STOPS_QUERY}
-              variables={stopsQuery}
-              skip={skipStopQuery}
-            >
-              {({ loading, error, data }) => {
-                console.log('stop query : ', stopsQuery, loading, error, data)
-                if (loading || error) return <React.Fragment />
-                if (data && data.stops.length === 0) return <React.Fragment />
-                console.log('stop : ', data, viewport)
-                return <React.Fragment />
-              }}
-            </Query>
             <SVGOverlay redraw={this._redrawSVGOverlay} />
             <CanvasOverlay redraw={this._redrawCanvasOverlay} />
             {plan.state.from.length === 2 && (
@@ -315,13 +353,32 @@ class Map extends Component {
                 }}
               />
             )}
-            <TapToMap
-              lat={tapLocation && tapLocation[1]}
-              lon={tapLocation && tapLocation[0]}
-              onSetFrom={v => plan.setFrom(v)}
-              onSetTo={v => plan.setTo(v)}
-              onCloseClick={this._onTapToMapCloseClick.bind(this)}
-            />
+            <Query
+              query={AVAILABLE_STOPS_QUERY}
+              variables={stopsQuery}
+              skip={skipStopQuery}
+            >
+              {({ loading, error, data }) => {
+                if (!data || !data.stops || data.stops.length === 0)
+                  return <Fragment />
+                return (
+                  <Fragment>
+                    {data.stops.map(ele => (
+                      <StopMarker
+                        key={`stop-marker-${ele.id}`}
+                        {...ele}
+                        onClick={() =>
+                          this.setState({
+                            popupInfo: ele
+                          })
+                        }
+                      />
+                    ))}
+                  </Fragment>
+                )
+              }}
+            </Query>
+            {this._renderPopup()}
           </ReactMapGL>
         )}
       </FullPageBox>
