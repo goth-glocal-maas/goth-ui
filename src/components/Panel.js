@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Query } from "react-apollo"
 import { Subscribe } from "unstated"
 import _ from "lodash"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import PlanContainer from "../unstated/plan"
 import { yellow, grayBackground } from "../constants/color"
@@ -13,14 +14,14 @@ import PanelModeSelector from "./parts/PanelModeSelector"
 import { ROUTEPLAN_QUERY } from "../constants/GraphQLCmd"
 import { getCurrentTimeForPlan, getGoodTrips } from "../utils/fn"
 import { TRANSPORT_MODES } from "../constants/mode"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import User from "./User"
 
 const Box = styled.div`
   width: 100%;
   max-width: 360px;
   height: 100vh;
-  z-index: 3;  // mapbox logo on z-index 2
-  box-shadow: 1.5px 2px 2px 0 rgba(0,0,0,.2);
+  z-index: 3; // mapbox logo on z-index 2
+  box-shadow: 1.5px 2px 2px 0 rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   transition: transform 0.5s linear;
@@ -30,7 +31,7 @@ const Box = styled.div`
     max-width: 100%;
     height: 60vh;
 
-    box-shadow: 1px 1px 3px rgba(0,0,0,.2);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
   }
 `
 
@@ -40,6 +41,10 @@ const BoxTitle = styled.div`
 
   padding: 0.5rem 1rem;
   font-size: 2rem;
+
+  display: flex;
+  flex-dirextion: row;
+  justify-content: space-between;
 `
 
 const BoxContent = styled.div`
@@ -197,7 +202,17 @@ class Panel extends Component {
           const pickedTrip = goodTrips[picked]
           return (
             <Box>
-              <BoxTitle>GoTH</BoxTitle>
+              <BoxTitle>
+                <span>GoTH</span>
+                {loading && <FontAwesomeIcon icon="cog" size="1x" spin />}
+                <User>
+                  {({ data: { me } }) => {
+                    console.log(me)
+                    if (me) return <p>{me.name}</p>
+                    return null
+                  }}
+                </User>
+              </BoxTitle>
               <BoxContent>
                 {!pickedTrip && (
                   <Fragment>
