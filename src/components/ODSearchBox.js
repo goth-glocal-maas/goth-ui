@@ -177,13 +177,13 @@ export default class ODSearchBox extends Component {
     if (_.isString(v)) {
       this.setState({ value: v })
     } else if (_.isArray(v)) {
-      this.setState({ value: v.reverse().join(',') })
+      this.setState({ value: v.join(',') })
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const nextValue = _.isArray(nextProps.value)
-      ? nextProps.value.reverse().join(',')
+      ? nextProps.value.join(',')
       : nextProps.value
     if ((nextProps.value !== this.props.value) && _.isString(nextValue) &&
       (nextValue !== this.state.value)) {

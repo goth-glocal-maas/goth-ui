@@ -33,6 +33,10 @@ class PlanContainer extends Container {
     this.setState({ from, to, itineraries: [] })
   }
 
+  switchOD = () => {
+    this.setState({ from: this.state.to, to: this.state.from })
+  }
+
   setFrom = from => {
     this.setState({ from, itineraries: [] })
   }

@@ -4,9 +4,10 @@ import { Query } from "react-apollo"
 import { Subscribe } from "unstated"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Link } from "react-router-dom"
 
 import PlanContainer from "../unstated/plan"
-import { yellow, grayBackground } from "../constants/color"
+import { yellow, grayBackground, darkmagenta } from "../constants/color"
 import ODInput from "./ODInput"
 import ItineraryChoiceItem from "./ItineraryChoiceItem"
 import ItineraryDirection from "./ItineraryDirection"
@@ -15,6 +16,7 @@ import { ROUTEPLAN_QUERY } from "../constants/GraphQLCmd"
 import { getCurrentTimeForPlan, getGoodTrips } from "../utils/fn"
 import { TRANSPORT_MODES } from "../constants/mode"
 import User from "./User"
+import Signout from "./Signout"
 
 const Box = styled.div`
   width: 100%;
@@ -45,6 +47,13 @@ const BoxTitle = styled.div`
   display: flex;
   flex-dirextion: row;
   justify-content: space-between;
+
+  a {
+    color: white;
+  }
+  a:hover {
+    color: ${darkmagenta};
+  }
 `
 
 const BoxContent = styled.div`
@@ -207,16 +216,29 @@ class Panel extends Component {
                 {loading && <FontAwesomeIcon icon="cog" size="1x" spin />}
                 <User>
                   {({ data: { me } }) => {
-                    console.log(me)
-                    if (me) return <p>{me.name}</p>
-                    return null
+                    if (me === undefined) return null
+                    if (me)
+                      return (
+                        <span>
+                          {me.name} <Signout />
+                        </span>
+                      )
+                    return (
+                      <Link to="/login/">
+                        <FontAwesomeIcon icon="sign-in-alt" />
+                      </Link>
+                    )
                   }}
                 </User>
               </BoxTitle>
               <BoxContent>
                 {!pickedTrip && (
                   <Fragment>
-                    <ODInput origin={from} destination={to} />
+                    <ODInput
+                      origin={from}
+                      destination={to}
+                      switchOD={() => plan.switchOD()}
+                    />
                     <PanelModeSelector
                       mode={mode}
                       setMode={mode => plan.setMode(mode)}

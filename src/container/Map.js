@@ -22,6 +22,7 @@ import geoViewport from "@mapbox/geo-viewport"
 import PlanContainer from "../unstated/plan"
 
 import Panel from "../components/Panel"
+import Modal from "../components/Modal"
 import MMarker from "../components/map/Marker"
 import StopMarker from "../components/map/StopMarker"
 import { MODE_GL_STYLES } from "../constants/mode"
@@ -91,7 +92,7 @@ class Map extends Component {
       // transitionInterpolator: new LinearInterpolator({
       //   around: [event.offsetCenter.x, event.offsetCenter.y]
       // }),
-      transitionDuration: 200,
+      transitionDuration: 200
     },
     defaultMapStyle: null,
     mapStyle: null,
@@ -298,7 +299,7 @@ class Map extends Component {
 
     const { latitude, longitude, zoom, width, height } = viewport
     const skipStopQuery =
-      width === undefined || height === undefined || zoom < 13
+      width === undefined || height === undefined || zoom < 14.5
     // console.log("skipStopQuery", skipStopQuery, width, height, zoom)
     const [minLon, minLat, maxLon, maxLat] = geoViewport.bounds(
       [longitude, latitude],
@@ -306,10 +307,10 @@ class Map extends Component {
       [width, height]
     )
     const stopsQuery = {
-      minLat: +minLat.toFixed(5),
-      minLon: +minLon.toFixed(5),
-      maxLat: +maxLat.toFixed(5),
-      maxLon: +maxLon.toFixed(5)
+      minLat: +minLat.toFixed(6),
+      minLon: +minLon.toFixed(6),
+      maxLat: +maxLat.toFixed(6),
+      maxLon: +maxLon.toFixed(6)
     }
 
     return (
@@ -381,6 +382,7 @@ class Map extends Component {
             {this._renderPopup()}
           </ReactMapGL>
         )}
+        <Modal />
       </FullPageBox>
     )
   }

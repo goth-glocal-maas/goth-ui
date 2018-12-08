@@ -17,6 +17,7 @@ import { GRAPHQL_URI } from "./constants/Api"
 
 export const client = new ApolloClient({
   uri: GRAPHQL_URI,
+  credentials: "include",
   clientState: {
     defaults,
     resolvers

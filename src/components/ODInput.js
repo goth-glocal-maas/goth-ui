@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 
 // import "./ODInput.css"
 import ODSearchBox from "./ODSearchBox"
+import { red } from '../constants/color'
 
 const ODBox = styled.div`
   display: flex;
@@ -21,7 +22,14 @@ const ODInputBox = styled.div`
 const ODButtonBox = styled.div`
   width: 4rem;
   height: 100%;
-  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: ${props => (props.visible ? "flex" : "none")};
+
+  :hover {
+    color: ${red};
+    cursor: pointer;
+  }
 `
 
 const ODButton = styled.button`
@@ -56,8 +64,6 @@ const ODLink = styled(Link)`
   display: ${props => (props.visible ? "block" : "none")};
 `
 
-const coordsToStr = i => i.reverse().join(",")
-
 class ODInput extends Component {
   handleSwitchOD() {
     const { origin, destination } = this.props
@@ -69,19 +75,15 @@ class ODInput extends Component {
   render() {
     const { origin, originLabel, destination, destinationLabel } = this.props
     const bothFilled =
-      (origin.length > 0 && destination.length > 0) ? "1" : undefined
+      origin.length > 0 && destination.length > 0 ? "1" : undefined
+    const oneFilled = origin.length > 0 || destination.length > 0 ? "1" : undefined
     const tsp = new Date().getTime()
     return (
       <ODBox>
         <ODInputBox>
           <ODSearchBox label="Origin" value={origin} valueLabel={originLabel} />
-          <ODButtonBox>
-            <ODButton
-              visible={bothFilled}
-              onClick={this.handleSwitchOD.bind(this)}
-            >
-              <FontAwesomeIcon icon="sync" size="sm" />
-            </ODButton>
+          <ODButtonBox visible={true}>
+            <FontAwesomeIcon icon="ellipsis-v" size="1x" />
           </ODButtonBox>
         </ODInputBox>
         <ODInputBox>
@@ -90,15 +92,11 @@ class ODInput extends Component {
             value={destination}
             valueLabel={destinationLabel}
           />
-          <ODButtonBox>
-            <ODLink
-              to={`/p/${coordsToStr(origin)}/${coordsToStr(
-                destination
-              )}?ts=${tsp}`}
-              visible={bothFilled}
-            >
-              <FontAwesomeIcon icon="play-circle" size="lg" />
-            </ODLink>
+          <ODButtonBox
+            visible={oneFilled}
+            onClick={() => this.props.switchOD()}
+          >
+            <FontAwesomeIcon icon="sync" size="1x" />
           </ODButtonBox>
         </ODInputBox>
       </ODBox>
