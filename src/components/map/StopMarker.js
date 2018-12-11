@@ -9,6 +9,7 @@ const pinStyle = {
   fill: "#d22",
   stroke: "none",
   display: "block",
+  cursor: "pointer",
 }
 
 export default class StopMarker extends PureComponent {

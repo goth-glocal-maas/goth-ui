@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React from "react"
 import { Query } from "react-apollo"
 import gql from "graphql-tag"
 import PropTypes from "prop-types"
@@ -62,19 +62,6 @@ const InlineList = styled.ul`
   }
 `
 
-const SignLineItem = styled.li`
-  background: white;
-
-  before {
-    content: "";
-    display: inline-block;
-    background: ${props => props.color};
-    border: 4px solid ${props => props.color};
-    width: 6px;
-    height: 1.4rem;
-  }
-`
-
 const StopTimeItem = styled.li`
   font-size: 1.3rem;
   font-weight: 500;
@@ -102,11 +89,6 @@ const getRouteFromStopTime = (routes, stoptimesPattern) => {
   const routeId = rIds.splice(0, 2).join(":")
   const fR = routes.filter(r => r.id === routeId)
   return fR[0]
-}
-
-const StopLineIcon = props => {
-  console.log("stopline => ", props)
-  return <SignLineItem color={`#${props.color}`}>{props.longName}</SignLineItem>
 }
 
 const StopTimeBox = props => {

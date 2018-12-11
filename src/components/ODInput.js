@@ -1,9 +1,7 @@
 import React, { Component } from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Link } from "react-router-dom"
 
-// import "./ODInput.css"
 import ODSearchBox from "./ODSearchBox"
 import { red } from '../constants/color'
 
@@ -21,47 +19,16 @@ const ODInputBox = styled.div`
 
 const ODButtonBox = styled.div`
   width: 4rem;
-  height: 100%;
+  height: 4rem;
   justify-content: center;
   align-items: center;
-  display: ${props => (props.visible ? "flex" : "none")};
+  display: ${props => (props.visible ? "inline-flex" : "none")};
+  font-size: 1.6rem;
 
   :hover {
     color: ${red};
     cursor: pointer;
   }
-`
-
-const ODButton = styled.button`
-  background: #ffffff;
-  border: 0;
-  border-radius: 1rem;
-  box-shadow: 1.5px 1px 1px 0 rgba(0, 0, 0, 0.2);
-
-  width: 3.5rem;
-
-  font-size: 1.6rem;
-  margin: 0.5rem 0 0;
-  padding: 0.3rem;
-
-  color: #888;
-  display: ${props => (props.visible ? "block" : "none")};
-`
-
-const ODLink = styled(Link)`
-  background: #ffffff;
-  border: 0;
-  border-radius: 1rem;
-  box-shadow: 1.5px 1px 1px 0 rgba(0, 0, 0, 0.2);
-
-  width: 3.5rem;
-
-  font-size: 1.6rem;
-  margin: 0.5rem 0 0;
-  padding: 0.3rem;
-
-  color: #888;
-  display: ${props => (props.visible ? "block" : "none")};
 `
 
 class ODInput extends Component {
@@ -74,10 +41,7 @@ class ODInput extends Component {
 
   render() {
     const { origin, originLabel, destination, destinationLabel } = this.props
-    const bothFilled =
-      origin.length > 0 && destination.length > 0 ? "1" : undefined
     const oneFilled = origin.length > 0 || destination.length > 0 ? "1" : undefined
-    const tsp = new Date().getTime()
     return (
       <ODBox>
         <ODInputBox>
