@@ -23,6 +23,7 @@ import PlanContainer from "../unstated/plan"
 
 import Panel from "../components/Panel"
 import Modal from "../components/Modal"
+import StopSign from "../components/StopSign"
 import MMarker from "../components/map/Marker"
 import StopMarker from "../components/map/StopMarker"
 import { MODE_GL_STYLES } from "../constants/mode"
@@ -261,7 +262,7 @@ class Map extends Component {
           closeOnClick={false}
           onClose={() => this.setState({ popupInfo: null })}
         >
-          {popupInfo.id}
+          {popupInfo.id && <StopSign stopId={popupInfo.id} />}
           <StyledUL>
             <li
               onClick={() => {

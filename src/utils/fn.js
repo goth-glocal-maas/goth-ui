@@ -1,6 +1,12 @@
 import _ from "lodash"
 import moment from "moment-timezone"
 
+export const getHHMMFromSeconds = (secs) => {
+  const hh = Math.floor(secs/3600)
+  const mm = Math.floor(secs/60%60)
+  return `${hh > 9 ? hh : `0${hh}`}:${mm > 9 ? mm : `0${mm}`}`
+}
+
 export const getCurrentTimeForPlan = tmsp => {
   let now = _.isNumber(tmsp) ? moment(+tmsp) : moment()
   now = now.tz("Asia/Bangkok")
