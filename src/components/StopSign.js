@@ -125,7 +125,6 @@ const StopSign = props => (
     {({ loading, error, data }) => {
       if (loading) return <FontAwesomeIcon icon="cog" size="1x" spin />
       if (error) return <p>{error.message}</p>
-      console.log(data)
       const {
         stop_detail: { name },
         stop_route,

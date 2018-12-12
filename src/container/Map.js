@@ -28,6 +28,7 @@ import MMarker from "../components/map/Marker"
 import StopMarker from "../components/map/StopMarker"
 import { MODE_GL_STYLES } from "../constants/mode"
 import { getGoodTrips } from "../utils/fn"
+import { gray } from "../constants/color"
 
 import alphaify from "../utils/alphaify"
 import { AVAILABLE_STOPS_QUERY } from "../constants/GraphQLCmd"
@@ -56,6 +57,23 @@ const StyledUL = styled.ul`
 
   li a {
     width: 100%;
+  }
+`
+
+const PopupCloseButton = styled.span`
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.2rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+
+  :hover {
+    background: ${gray};
+    color: white;
   }
 `
 
@@ -237,6 +255,7 @@ class Map extends Component {
           .map(project)
           .forEach((p, i) => this._redrawDot(ctx, p, i, routeColor))
       })
+      return null
     })
   }
 
@@ -246,6 +265,10 @@ class Map extends Component {
       this.setState({ mapStyle: _mapStyle })
       return
     }
+  }
+
+  _handlePopupClose() {
+    this.setState({ popupInfo: null })
   }
 
   _renderPopup() {
@@ -260,8 +283,11 @@ class Map extends Component {
           latitude={popupInfo.lat}
           offsetTop={popupInfo.id ? -10 : 0}
           closeOnClick={false}
-          onClose={() => this.setState({ popupInfo: null })}
+          closeButton={false}
         >
+          <PopupCloseButton onClick={this._handlePopupClose.bind(this)}>
+            X
+          </PopupCloseButton>
           {popupInfo.id && <StopSign stopId={popupInfo.id} />}
           <StyledUL>
             <li
