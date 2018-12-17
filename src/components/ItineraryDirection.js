@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import PlanContainer from "../unstated/plan"
 import ModeIcon from "./parts/ModeIcon"
-import { red, gray } from "../constants/color"
+import { red, gray, black } from "../constants/color"
 import ItineraryStep from "./parts/ItineraryStep"
 import { getHHMM, sec2min } from "../utils/fn"
 
@@ -135,7 +135,7 @@ const ItineraryDirection = props => {
                   <span>{getHHMM(leg.endTime)}</span>
                 </ItemLine>
                 <div
-                  style={{ color: leg.routeColor ? `#${leg.routeColor}` : red }}
+                  style={{ color: leg.routeColor ? `#${leg.routeColor}` : black }}
                 >
                   <ModeIcon mode={leg.mode} size="2x" />
                   &nbsp; {sec2min(leg.duration)} minutes

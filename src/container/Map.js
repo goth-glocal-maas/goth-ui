@@ -141,7 +141,6 @@ class Map extends Component {
         this._loadData()
       })
       .catch(error => {
-        console.error(error)
       })
   }
 

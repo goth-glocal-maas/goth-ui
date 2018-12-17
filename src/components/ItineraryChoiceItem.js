@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { Subscribe } from "unstated"
 
+import { black } from '../constants/color'
 import PlanContainer from "../unstated/plan"
 import ItineraryStep from "./parts/ItineraryStep"
 
@@ -42,14 +43,14 @@ const MinBox = styled.div`
 const MinUnit = styled.span`
   float: right;
   font-size: 1.2rem
-  color: #444;
+  color: ${black};
   line-height: 1rem;
 `
 
 const CostUnit = styled.span`
   float: right;
   font-size: 1.5rem
-  color: #444;
+  color: ${black};
 `
 
 const IndexesBox = styled.div`

@@ -4,8 +4,6 @@ import "./index.css"
 import App from "./App"
 import registerServiceWorker from "./registerServiceWorker"
 import { HashRouter } from "react-router-dom"
-import dotenv from "dotenv"
-
 import ApolloClient from "apollo-boost"
 import { ApolloProvider } from "react-apollo"
 import { Provider as UNSTATEDProvider } from "unstated"
@@ -24,7 +22,6 @@ export const client = new ApolloClient({
   }
 })
 
-dotenv.config()
 UNSTATED.logStateChanges = false
 
 ReactDOM.render(
