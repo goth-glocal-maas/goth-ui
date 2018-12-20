@@ -80,7 +80,7 @@ const ItemLine = styled.span`
 
   :after {
     content: "";
-    display: ${props => props.hasEndDot ? 'block': 'none'};
+    display: ${props => (props.hasEndDot ? "block" : "none")};
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -98,16 +98,16 @@ const ItemLine = styled.span`
   }
 
   span:first-child {
-    color: ${red};
-    font-size: 1rem;
+    color: ${black};
+    font-size: 1.2rem;
     font-weight: 200;
     position: absolute;
     top: -1.3rem;
     left: 1rem;
   }
   span:last-child {
-    color: ${red};
-    font-size: 1rem;
+    color: ${black};
+    font-size: 1.2rem;
     font-weight: 200;
     position: absolute;
     bottom: -1.3rem;
@@ -125,27 +125,49 @@ const ItineraryDirection = props => {
         <Card>
           <ItineraryStep />
           <Timeline>
-            {trip.legs && trip.legs.map((leg, index) => (
-              <Item key={`picked-trip-item-${index}`}>
-                <ItemLine
-                  color={leg.routeColor ? `#${leg.routeColor}` : red}
-                  hasEndDot
-                >
-                  <span>{getHHMM(leg.startTime)}</span>
-                  <span>{getHHMM(leg.endTime)}</span>
-                </ItemLine>
-                <div
-                  style={{ color: leg.routeColor ? `#${leg.routeColor}` : black }}
-                >
-                  <ModeIcon mode={leg.mode} size="2x" />
-                  &nbsp; {sec2min(leg.duration)} minutes
-                </div>
-                {leg.mode === 'BUS' && (<ItemPrice>
-                  <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
-                  &nbsp; 15 THB
-                </ItemPrice>)}
-              </Item>
-            ))}
+            {trip.legs &&
+              trip.legs.map((leg, index) => (
+                <Item key={`picked-trip-item-${index}`}>
+                  <ItemLine
+                    color={leg.routeColor ? `#${leg.routeColor}` : red}
+                    hasEndDot
+                  >
+                    <span>{getHHMM(leg.startTime)}</span>
+                    <span>{getHHMM(leg.endTime)}</span>
+                  </ItemLine>
+                  <div
+                    style={{
+                      color: leg.routeColor ? `#${leg.routeColor}` : black
+                    }}
+                  >
+                    <div>
+                      <ModeIcon mode={leg.mode} size="2x" />
+                      {leg.agencyId && (
+                        <React.Fragment>
+                          &nbsp;
+                          <span className="tag is-light is-medium">
+                            {leg.agencyId}
+                          </span>
+                        </React.Fragment>
+                      )}
+                    </div>
+                    <div>
+                      {leg.route}
+                      {leg.headsign && (
+                        <React.Fragment>&nbsp;→ {leg.headsign}</React.Fragment>
+                      )}
+                    </div>
+                    {sec2min(leg.duration)} minutes
+                  </div>
+                  {leg.mode === "BUS" && (
+                    <ItemPrice>
+                      <span className="tag is-warning">BUY TICKET SOON</span>
+                      {/* <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
+                      &nbsp; 15 THB */}
+                    </ItemPrice>
+                  )}
+                </Item>
+              ))}
           </Timeline>
         </Card>
       )}

@@ -84,10 +84,8 @@ class TimePicker extends Component {
 
   /** arrow down + up hour * */
   handleKeyDownHour = event => {
-    console.log(event.keyCode)
     const delta = TimePicker.DELTAS[event.keyCode]
     if (delta) {
-      console.log('here --> ', delta)
       this.props.changeTime({
         add: { key: "hours", delta }
       })
