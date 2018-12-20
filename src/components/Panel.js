@@ -22,16 +22,15 @@ const Box = styled.div`
   width: 100%;
   max-width: 360px;
   height: 100vh;
-  z-index: 3; // mapbox logo on z-index 2
+  z-index: 3;
   box-shadow: 1.5px 2px 2px 0 rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
   transition: transform 0.5s linear;
 
   @media (max-width: 450px) {
     width: 100%;
     max-width: 100%;
     height: 60vh;
+    overflow-y: scroll;
 
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
   }
@@ -45,7 +44,7 @@ const BoxTitle = styled.div`
   font-size: 2rem;
 
   display: flex;
-  flex-dirextion: row;
+  flex-direction: row;
   justify-content: space-between;
 
   a {
@@ -59,8 +58,6 @@ const BoxTitle = styled.div`
 const BoxContent = styled.div`
   padding: 0.5rem 0.5rem 1rem 1.5rem;
   background: ${grayBackground};
-
-  overflow-y: auto;
 `
 
 const MutedHeader = styled.p`

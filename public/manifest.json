@@ -3,9 +3,19 @@
   "name": "GoTH - Mobility as a Service",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "https://static.10ninox.com/goth/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "https://static.10ninox.com/goth/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://static.10ninox.com/goth/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "start_url": "./index.html",

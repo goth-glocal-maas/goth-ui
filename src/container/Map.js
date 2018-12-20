@@ -34,7 +34,7 @@ import alphaify from "../utils/alphaify"
 import { AVAILABLE_STOPS_QUERY } from "../constants/GraphQLCmd"
 
 const FullPageBox = styled.div`
-  height: 100vh;
+  height: 100%;
   z-index: 1;
   flex: 1;
   display: flex;
@@ -42,6 +42,16 @@ const FullPageBox = styled.div`
 
   @media (max-width: 450px) {
     flex-direction: column-reverse;
+  }
+`
+
+const MapContainer = styled.div`
+  width: 100%;
+  height: 100%;
+
+  @media (max-width: 450px) {
+    height: 40vh;
+    min-height: 200px;
   }
 `
 
@@ -140,8 +150,7 @@ class Map extends Component {
         this.setState({ defaultMapStyle: resp.data })
         this._loadData()
       })
-      .catch(error => {
-      })
+      .catch(error => {})
   }
 
   componentWillReceiveProps(nextProps) {
@@ -343,70 +352,72 @@ class Map extends Component {
       <FullPageBox>
         <Panel {...this.props} />
         {mapStyle && (
-          <ReactMapGL
-            {...this.state.viewport}
-            onViewportChange={this._onViewportChange}
-            mapStyle={this.state.mapStyle}
-            reuseMaps={true}
-            width="100%"
-            height="100%"
-            onClick={this._onClick}
-          >
-            <SVGOverlay redraw={this._redrawSVGOverlay} />
-            <CanvasOverlay redraw={this._redrawCanvasOverlay} />
-            {plan.state.from.length === 2 && (
-              <MMarker
-                mode="START"
-                color={color(8)}
-                draggable
-                lat={plan.state.from[0]}
-                lon={plan.state.from[1]}
-                // onDragStart={this._onMarkerDragStart}
-                // onDrag={this._onMarkerDrag}
-                onDragEnd={evt => {
-                  plan.setFrom([evt.lngLat[1], evt.lngLat[0]])
-                }}
-              />
-            )}
-            {plan.state.to.length === 2 && (
-              <MMarker
-                mode="END"
-                color={color(8)}
-                draggable
-                lat={plan.state.to[0]}
-                lon={plan.state.to[1]}
-                onDragEnd={evt => {
-                  plan.setTo([evt.lngLat[1], evt.lngLat[0]])
-                }}
-              />
-            )}
-            <Query
-              query={AVAILABLE_STOPS_QUERY}
-              variables={stopsQuery}
-              skip={skipStopQuery}
+          <MapContainer>
+            <ReactMapGL
+              {...this.state.viewport}
+              onViewportChange={this._onViewportChange}
+              mapStyle={this.state.mapStyle}
+              reuseMaps={true}
+              width="100%"
+              height="100%"
+              onClick={this._onClick}
             >
-              {({ loading, error, data }) => {
-                if (!data || !data.stops || data.stops.length === 0)
-                  return <Fragment />
-                return (
-                  <Fragment>
-                    {data.stops.map(ele => (
-                      <StopMarker
-                        key={`stop-marker-${ele.id}`}
-                        {...ele}
-                        onClick={() =>
-                          this.setState({
-                            popupInfo: ele
-                          })
-                        }
-                      />
-                    ))}
-                  </Fragment>
-                )
-              }}
-            </Query>
-            {this._renderPopup()}
-          </ReactMapGL>
+              <SVGOverlay redraw={this._redrawSVGOverlay} />
+              <CanvasOverlay redraw={this._redrawCanvasOverlay} />
+              {plan.state.from.length === 2 && (
+                <MMarker
+                  mode="START"
+                  color={color(8)}
+                  draggable
+                  lat={plan.state.from[0]}
+                  lon={plan.state.from[1]}
+                  // onDragStart={this._onMarkerDragStart}
+                  // onDrag={this._onMarkerDrag}
+                  onDragEnd={evt => {
+                    plan.setFrom([evt.lngLat[1], evt.lngLat[0]])
+                  }}
+                />
+              )}
+              {plan.state.to.length === 2 && (
+                <MMarker
+                  mode="END"
+                  color={color(8)}
+                  draggable
+                  lat={plan.state.to[0]}
+                  lon={plan.state.to[1]}
+                  onDragEnd={evt => {
+                    plan.setTo([evt.lngLat[1], evt.lngLat[0]])
+                  }}
+                />
+              )}
+              <Query
+                query={AVAILABLE_STOPS_QUERY}
+                variables={stopsQuery}
+                skip={skipStopQuery}
+              >
+                {({ loading, error, data }) => {
+                  if (!data || !data.stops || data.stops.length === 0)
+                    return <Fragment />
+                  return (
+                    <Fragment>
+                      {data.stops.map(ele => (
+                        <StopMarker
+                          key={`stop-marker-${ele.id}`}
+                          {...ele}
+                          onClick={() =>
+                            this.setState({
+                              popupInfo: ele
+                            })
+                          }
+                        />
+                      ))}
+                    </Fragment>
+                  )
+                }}
+              </Query>
+              {this._renderPopup()}
+            </ReactMapGL>
+          </MapContainer>
         )}
         <Modal />
       </FullPageBox>
