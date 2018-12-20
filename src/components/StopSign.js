@@ -139,7 +139,15 @@ const StopSign = props => (
               <div key={`st-${ind}`}>
                 <span style={{ color: `#${rt.color}` }} title={rt.agencyName}>
                   <ModeIcon mode={rt.mode} size="1x" />
-                  &nbsp;{rt.longName}
+                  {rt.agencyName && (
+                    <React.Fragment>
+                      &nbsp;
+                      <span className="tag is-light is-medium">
+                        {rt.agencyName}
+                      </span>
+                    </React.Fragment>
+                  )}
+                  <br/>{rt.shortName || rt.longName}
                 </span>
                 <StopTimeBox {...el} />
               </div>

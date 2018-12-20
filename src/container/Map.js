@@ -48,6 +48,7 @@ const FullPageBox = styled.div`
 const MapContainer = styled.div`
   width: 100%;
   height: 100%;
+  height: 100vh;
 
   @media (max-width: 450px) {
     height: 40vh;
