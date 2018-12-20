@@ -7,7 +7,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
 
 import PlanContainer from "../unstated/plan"
-import { yellow, grayBackground, darkmagenta } from "../constants/color"
+import {
+  yellow,
+  black,
+  grayBackground,
+  darkmagenta,
+  gray
+} from "../constants/color"
 import ODInput from "./ODInput"
 import ItineraryChoiceItem from "./ItineraryChoiceItem"
 import ItineraryDirection from "./ItineraryDirection"
@@ -17,6 +23,7 @@ import { getCurrentTimeForPlan, getGoodTrips } from "../utils/fn"
 import { TRANSPORT_MODES } from "../constants/mode"
 import User from "./User"
 import Signout from "./Signout"
+import { version, date } from "../../package.json"
 
 const Box = styled.div`
   width: 100%;
@@ -48,7 +55,7 @@ const BoxTitle = styled.div`
   justify-content: space-between;
 
   a {
-    color: white;
+    color: ${black};
   }
   a:hover {
     color: ${darkmagenta};
@@ -69,6 +76,11 @@ const MutedHeader = styled.p`
 
 const BoxScrollOffset = styled.div`
   padding-right: 1rem;
+`
+
+const Footer = styled.span`
+  font-size: 1.2rem;
+  color: ${gray};
 `
 
 const EmptyDiv = styled.div`
@@ -209,7 +221,7 @@ class Panel extends Component {
           return (
             <Box>
               <BoxTitle>
-                <span>GoTH</span>
+                <a href="javascript:location.reload(true)">GoTH</a>
                 {loading && <FontAwesomeIcon icon="cog" size="1x" spin />}
                 <User>
                   {({ data: { me } }) => {
@@ -278,6 +290,7 @@ class Panel extends Component {
                     )}
                   </BoxScrollOffset>
                 )}
+                <Footer>v.{version}.{date}</Footer>
               </BoxContent>
             </Box>
           )

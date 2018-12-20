@@ -334,7 +334,7 @@ class Map extends Component {
 
     const { latitude, longitude, zoom, width, height } = viewport
     const skipStopQuery =
-      width === undefined || height === undefined || zoom < 14.5
+      width === undefined || height === undefined || zoom < 13.5
     // console.log("skipStopQuery", skipStopQuery, width, height, zoom)
     const [minLon, minLat, maxLon, maxLat] = geoViewport.bounds(
       [longitude, latitude],
