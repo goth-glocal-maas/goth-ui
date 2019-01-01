@@ -10,7 +10,12 @@ class PlanContainer extends Container {
     picked: -1,
     itineraries: [],
     mode: 0,
-    hash: ""
+    hash: "",
+    navigatorPosition: {}
+  }
+
+  setNavigatorPosition = position => {
+    this.setState({ navigatorPosition: position })
   }
 
   setItineraryResult = (from, to, timestamp, itineraries, hash) => {

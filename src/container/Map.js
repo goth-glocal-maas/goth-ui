@@ -152,6 +152,28 @@ class Map extends Component {
         this._loadData()
       })
       .catch(error => {})
+
+    /* if (!navigator.geolocation) {
+          getCurrentPosition: (success, failure) => {
+            const failureMsg = "Your browser doesn't support geolocation."
+            console.log(success, failure)
+            // failure(dispatch(locationError(failureMsg)))
+          }
+        } */
+    const { plan } = this.props
+    navigator.geolocation.getCurrentPosition(
+      position => plan.setNavigatorPosition(position),
+      error => console.log('nav.position', error),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
+    )
+    this.watchID = navigator.geolocation.watchPosition(
+      position => plan.setNavigatorPosition(position),
+      error => console.log('nav.position', error)
+    )
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID)
   }
 
   componentWillReceiveProps(nextProps) {
