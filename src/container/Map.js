@@ -25,6 +25,7 @@ import Panel from "../components/Panel"
 import Modal from "../components/Modal"
 import StopSign from "../components/StopSign"
 import MMarker from "../components/map/Marker"
+import CurrentLocationMarker from "../components/map/CurrentLocationMarker"
 import StopMarker from "../components/map/StopMarker"
 import { MODE_GL_STYLES } from "../constants/mode"
 import { getGoodTrips } from "../utils/fn"
@@ -163,12 +164,12 @@ class Map extends Component {
     const { plan } = this.props
     navigator.geolocation.getCurrentPosition(
       position => plan.setNavigatorPosition(position),
-      error => console.log('nav.position', error),
+      error => console.log("nav.position", error),
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
     )
     this.watchID = navigator.geolocation.watchPosition(
       position => plan.setNavigatorPosition(position),
-      error => console.log('nav.position', error)
+      error => console.log("nav.position", error)
     )
   }
 
@@ -371,6 +372,8 @@ class Map extends Component {
       maxLon: +maxLon.toFixed(6)
     }
 
+    const { coords } = plan.state.navigatorPosition
+
     return (
       <FullPageBox>
         <Panel {...this.props} />
@@ -387,6 +390,11 @@ class Map extends Component {
             >
               <SVGOverlay redraw={this._redrawSVGOverlay} />
               <CanvasOverlay redraw={this._redrawCanvasOverlay} />
+              {coords && (
+                <CurrentLocationMarker
+                  lat={coords.latitude}
+                  lon={coords.longitude} />
+              )}
               {plan.state.from.length === 2 && (
                 <MMarker
                   mode="START"
