@@ -1,7 +1,7 @@
 {
   "name": "goth-webapp",
-  "version": "0.6.5",
-  "date": "2018-12-21",
+  "version": "0.7.0",
+  "date": "2019-01-04",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",
@@ -81,7 +81,7 @@
     "url-loader": "1.1.1",
     "viewport-mercator-project": "^6.1.0",
     "webpack": "4.19.1",
-    "webpack-dev-server": "3.1.9",
+    "webpack-dev-server": "^3.1.14",
     "webpack-manifest-plugin": "2.0.4",
     "workbox-webpack-plugin": "3.6.3"
   },

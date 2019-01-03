@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react"
 import { Marker } from "react-map-gl"
 
-export default class CurrentLocationMarker extends Component {
+export default class MyLocationMarker extends Component {
   render() {
     const {
       size = 20,

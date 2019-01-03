@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react"
 import ReactMapGL, {
   // LinearInterpolator,
+  FlyToInterpolator,
   SVGOverlay,
   CanvasOverlay,
   Popup
@@ -25,7 +26,8 @@ import Panel from "../components/Panel"
 import Modal from "../components/Modal"
 import StopSign from "../components/StopSign"
 import MMarker from "../components/map/Marker"
-import CurrentLocationMarker from "../components/map/CurrentLocationMarker"
+import MapControl from "../components/map/MapControl"
+import MyLocationMarker from "../components/map/MyLocationMarker"
 import StopMarker from "../components/map/StopMarker"
 import { MODE_GL_STYLES } from "../constants/mode"
 import { getGoodTrips } from "../utils/fn"
@@ -152,7 +154,7 @@ class Map extends Component {
         this.setState({ defaultMapStyle: resp.data })
         this._loadData()
       })
-      .catch(error => {})
+      .catch(error => { })
 
     /* if (!navigator.geolocation) {
           getCurrentPosition: (success, failure) => {
@@ -346,10 +348,29 @@ class Map extends Component {
 
   _onViewportChange = viewport => this.setState({ viewport })
 
+  _goToViewport = ({ longitude, latitude }) => {
+    this._onViewportChange({
+      longitude,
+      latitude,
+      zoom: 14,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionDuration: 500
+    });
+  };
+
   _onClick = ({ lngLat }) => {
     this.setState({
       popupInfo: { lat: lngLat[1], lon: lngLat[0] }
     })
+  }
+
+  _moveToCurrLocation = () => {
+    const { coords } = this.props.plan.state.navigatorPosition
+    if (coords)
+      this._goToViewport({
+        latitude: coords.latitude,
+        longitude: coords.longitude
+      })
   }
 
   render() {
@@ -379,6 +400,7 @@ class Map extends Component {
         <Panel {...this.props} />
         {mapStyle && (
           <MapContainer>
+            <MapControl moveToCurrentLoc={this._moveToCurrLocation} />
             <ReactMapGL
               {...this.state.viewport}
               onViewportChange={this._onViewportChange}
@@ -391,7 +413,7 @@ class Map extends Component {
               <SVGOverlay redraw={this._redrawSVGOverlay} />
               <CanvasOverlay redraw={this._redrawCanvasOverlay} />
               {coords && (
-                <CurrentLocationMarker
+                <MyLocationMarker
                   lat={coords.latitude}
                   lon={coords.longitude} />
               )}
