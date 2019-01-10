@@ -22,7 +22,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import {
   faClock as farFaClock,
-  faMoneyBillAlt as farFaMoneyBillAlt
+  faMoneyBillAlt as farFaMoneyBillAlt,
+  faDotCircle
 } from "@fortawesome/free-regular-svg-icons"
 
 import Map from "./container/Map"
@@ -45,6 +46,7 @@ library.add(faExclamationTriangle)
 library.add(faSignInAlt)
 library.add(faSignOutAlt)
 
+library.add(faDotCircle)
 library.add(farFaClock)
 library.add(farFaMoneyBillAlt)
 

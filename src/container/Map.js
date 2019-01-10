@@ -19,6 +19,7 @@ import { Subscribe } from "unstated"
 import bbox from "@turf/bbox"
 import WebMercatorViewport from "viewport-mercator-project"
 import geoViewport from "@mapbox/geo-viewport"
+import { toast } from "react-toastify"
 
 import PlanContainer from "../unstated/plan"
 
@@ -30,11 +31,12 @@ import MapControl from "../components/map/MapControl"
 import MyLocationMarker from "../components/map/MyLocationMarker"
 import StopMarker from "../components/map/StopMarker"
 import { MODE_GL_STYLES } from "../constants/mode"
-import { getGoodTrips } from "../utils/fn"
+import { getGoodTrips, getMyLocation } from "../utils/fn"
 import { gray } from "../constants/color"
 
 import alphaify from "../utils/alphaify"
 import { AVAILABLE_STOPS_QUERY } from "../constants/GraphQLCmd"
+import { toastConf } from "../constants/toast"
 
 const FullPageBox = styled.div`
   height: 100%;
@@ -154,7 +156,7 @@ class Map extends Component {
         this.setState({ defaultMapStyle: resp.data })
         this._loadData()
       })
-      .catch(error => { })
+      .catch(error => {})
 
     /* if (!navigator.geolocation) {
           getCurrentPosition: (success, failure) => {
@@ -355,8 +357,8 @@ class Map extends Component {
       zoom: 14,
       transitionInterpolator: new FlyToInterpolator(),
       transitionDuration: 500
-    });
-  };
+    })
+  }
 
   _onClick = ({ lngLat }) => {
     this.setState({
@@ -366,11 +368,18 @@ class Map extends Component {
 
   _moveToCurrLocation = () => {
     const { coords } = this.props.plan.state.navigatorPosition
-    if (coords)
-      this._goToViewport({
-        latitude: coords.latitude,
-        longitude: coords.longitude
-      })
+    const { latitude, longitude, navigator } = getMyLocation(coords)
+    if (!navigator) {
+      const m =
+        "You are not in support area, " +
+        "we are assuming that you are at Patong for the time being."
+      toast.info(m, toastConf)
+    }
+    // preset
+    this._goToViewport({
+      latitude,
+      longitude
+    })
   }
 
   render() {
@@ -380,7 +389,6 @@ class Map extends Component {
     const { latitude, longitude, zoom, width, height } = viewport
     const skipStopQuery =
       width === undefined || height === undefined || zoom < 13.5
-    // console.log("skipStopQuery", skipStopQuery, width, height, zoom)
     const [minLon, minLat, maxLon, maxLat] = geoViewport.bounds(
       [longitude, latitude],
       zoom,
@@ -394,6 +402,12 @@ class Map extends Component {
     }
 
     const { coords } = plan.state.navigatorPosition
+    const myLocation = coords
+      ? getMyLocation({
+          latitude: coords.latitude,
+          longitude: coords.longitude
+        })
+      : {}
 
     return (
       <FullPageBox>
@@ -414,8 +428,9 @@ class Map extends Component {
               <CanvasOverlay redraw={this._redrawCanvasOverlay} />
               {coords && (
                 <MyLocationMarker
-                  lat={coords.latitude}
-                  lon={coords.longitude} />
+                  lat={myLocation.latitude}
+                  lon={myLocation.longitude}
+                />
               )}
               {plan.state.from.length === 2 && (
                 <MMarker

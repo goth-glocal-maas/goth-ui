@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 import PropTypes from "prop-types"
-import styled from 'styled-components'
+import styled from "styled-components"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 const FollowMyLocation = styled.div`
 width: 40px
@@ -17,11 +18,12 @@ z-index: 30;
 display: block;
 `
 
-
 class MapControl extends Component {
   render() {
     return (
-      <FollowMyLocation onClick={this.props.moveToCurrentLoc} />
+      <FollowMyLocation onClick={this.props.moveToCurrentLoc}>
+        <FontAwesomeIcon icon={["far", "dot-circle"]} size="1x" />
+      </FollowMyLocation>
     )
   }
 }

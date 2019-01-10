@@ -81,6 +81,10 @@ const BoxScrollOffset = styled.div`
 const Footer = styled.span`
   font-size: 1.2rem;
   color: ${gray};
+
+  a {
+    color: ${gray};
+  }
 `
 
 const EmptyDiv = styled.div`
@@ -221,7 +225,7 @@ class Panel extends Component {
           return (
             <Box>
               <BoxTitle>
-                <a href="javascript:location.reload(true)">GoTH</a>
+                GoTH
                 {loading && <FontAwesomeIcon icon="cog" size="1x" spin />}
                 <User>
                   {({ data: { me } }) => {
@@ -290,7 +294,13 @@ class Panel extends Component {
                     )}
                   </BoxScrollOffset>
                 )}
-                <Footer>v.{version}.{date}</Footer>
+                <Footer>
+                  v.{version}.{date}
+                  &nbsp;&nbsp;
+                  <a href="javascript:location.reload(true)">
+                      <FontAwesomeIcon icon="sync" size="sm" />
+                  </a>
+                </Footer>
               </BoxContent>
             </Box>
           )

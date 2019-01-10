@@ -8,6 +8,9 @@ import ApolloClient from "apollo-boost"
 import { ApolloProvider } from "react-apollo"
 import { Provider as UNSTATEDProvider } from "unstated"
 import UNSTATED from "unstated-debug"
+import { ToastContainer, Slide } from "react-toastify"
+
+import "react-toastify/dist/ReactToastify.css"
 
 import { defaults, resolvers } from "./resolvers"
 
@@ -31,6 +34,7 @@ ReactDOM.render(
         <App />
       </HashRouter>
     </ApolloProvider>
+    <ToastContainer transition={Slide} />
   </UNSTATEDProvider>,
   document.getElementById("root")
 )

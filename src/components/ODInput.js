@@ -1,9 +1,11 @@
 import React, { Component } from "react"
 import styled from "styled-components"
+import { toast } from "react-toastify"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import ODSearchBox from "./ODSearchBox"
-import { red } from '../constants/color'
+import { red } from "../constants/color"
+import { toastConf } from "../constants/toast"
 
 const ODBox = styled.div`
   display: flex;
@@ -41,12 +43,24 @@ class ODInput extends Component {
 
   render() {
     const { origin, originLabel, destination, destinationLabel } = this.props
-    const oneFilled = origin.length > 0 || destination.length > 0 ? "1" : undefined
+    const oneFilled =
+      origin.length > 0 || destination.length > 0 ? "1" : undefined
+    const thisToastConf = {
+      ...toastConf,
+      toastId: "menu-wip"
+    }
+
     return (
       <ODBox>
         <ODInputBox>
           <ODSearchBox label="Origin" value={origin} valueLabel={originLabel} />
-          <ODButtonBox visible={true}>
+          <ODButtonBox
+            visible={true}
+            onClick={() => {
+              if (!toast.isActive("menu-wip"))
+                toast.error("This feature is under-development", thisToastConf)
+            }}
+          >
             <FontAwesomeIcon icon="ellipsis-v" size="1x" />
           </ODButtonBox>
         </ODInputBox>
