@@ -53,3 +53,5 @@ export const getMyLocation = ({ latitude, longitude }) => {
     navigator: false
   }
 }
+
+export const add = (a, b) => a + b

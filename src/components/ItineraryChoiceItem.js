@@ -1,10 +1,12 @@
 import React from "react"
+import PropTypes from "prop-types"
 import styled from "styled-components"
 import { Subscribe } from "unstated"
 
 import { black } from "../constants/color"
 import PlanContainer from "../unstated/plan"
 import ItineraryStep from "./parts/ItineraryStep"
+import { add, getHH, getHHMM } from "../utils/fn"
 
 const ItineraryChoiceItem = styled.div`
   background: #fff;
@@ -76,14 +78,25 @@ const IndexValue = styled.div`
 
 const ChioceItem = props => {
   const { minStartTime, maxEndTime } = props
-  const { startTime, endTime } = props.itinerary
+  const { startTime, endTime, fare } = props.itinerary
+  let farePrice = null
+  if (fare && fare.details.regular) {
+    const { regular } = fare.details
+    const fraction = Math.pow(
+      10,
+      regular[0].price.currency.defaultFractionDigits
+    )
+    const totalFare = regular.map(i => i.price.cents).reduce(add)
+    farePrice = totalFare / fraction
+  }
   const durationMin = (endTime - startTime) / 60 / 1000
+  // TODO: DEAL with trip for the next day
   if (durationMin > 300) return <React.Fragment />
+  const percentPerSec = 100 / (maxEndTime - minStartTime)
   const maxPercent =
     maxEndTime === endTime
       ? 100
-      : ((endTime - minStartTime) / (maxEndTime - minStartTime)) * 100
-
+      : (endTime - minStartTime) * percentPerSec
   return (
     <Subscribe to={[PlanContainer]}>
       {plan => (
@@ -92,7 +105,11 @@ const ChioceItem = props => {
             plan.setPickedItinerary(props.index)
           }}
         >
-          <ItineraryStep {...props} maxPercent={maxPercent} />
+          <ItineraryStep
+            {...props}
+            maxPercent={maxPercent}
+            percentPerSec={percentPerSec}
+          />
           <Flex>
             <FlexColCenter>
               {/* <div style={{ display: "flex", flexDirection: "column" }}>
@@ -125,7 +142,7 @@ const ChioceItem = props => {
                 <MinUnit>min</MinUnit>
               </MinBox>
               <MinBox>
-                <CostUnit>50 THB</CostUnit>
+                <CostUnit>{farePrice} THB</CostUnit>
               </MinBox>
             </FlexCol>
           </Flex>
@@ -133,6 +150,13 @@ const ChioceItem = props => {
       )}
     </Subscribe>
   )
+}
+
+ChioceItem.propTypes = {
+  index: PropTypes.number.isRequired,
+  minStartTime: PropTypes.number.isRequired,
+  maxEndTime: PropTypes.number.isRequired,
+  itinerary: PropTypes.object.isRequired // shape is too complicated for this
 }
 
 export default ChioceItem

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react"
 import _ from "lodash"
 
-import ItineraryChoiceItem from "./ItineraryChoiceItem.old"
+import ItineraryChoiceItem from "./ItineraryChoiceItem"
 
 
 export default class ItineraryChoices extends Component {

@@ -1,12 +1,10 @@
 import React from "react"
 import styled from "styled-components"
 import { Subscribe } from "unstated"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import PlanContainer from "../unstated/plan"
 import ModeIcon from "./parts/ModeIcon"
 import { red, gray, black } from "../constants/color"
-import ItineraryStep from "./parts/ItineraryStep"
 import { getHHMM, sec2min } from "../utils/fn"
 
 const Card = styled.div`
@@ -123,54 +121,51 @@ const ItineraryDirection = props => {
     <Subscribe to={[PlanContainer]}>
       {plan => (
         <Card>
-          <ItineraryStep />
           <Timeline>
-            {trip.legs &&
-              trip.legs.map((leg, index) => (
-                <Item key={`picked-trip-item-${index}`}>
-                  <ItemLine
-                    color={leg.routeColor ? `#${leg.routeColor}` : red}
-                    hasEndDot
-                  >
-                    <span>{getHHMM(leg.startTime)}</span>
-                    <span>{getHHMM(leg.endTime)}</span>
-                  </ItemLine>
-                      {leg.mode !== 'WALK' && `${leg.from.name}`}
-                  <div
-                    style={{
-                      color: leg.routeColor ? `#${leg.routeColor}` : black
-                    }}
-                  >
-                    <div>
-                      <ModeIcon mode={leg.mode} size="2x" />
-                      {leg.agencyId && (
-                        <React.Fragment>
-                          &nbsp;
-                          <span className="tag is-light is-medium">
-                            {leg.agencyId}
-                          </span>
-                        </React.Fragment>
-                      )}
-                    </div>
-                    <div>
-                      {leg.route}
-                      {leg.headsign && (
-                        <React.Fragment>&nbsp;→ {leg.headsign}</React.Fragment>
-                      )}
-                    </div>
-                    {sec2min(leg.duration)} minutes
-
+            {trip.legs.map((leg, index) => (
+              <Item key={`picked-trip-item-${index}`}>
+                <ItemLine
+                  color={leg.routeColor ? `#${leg.routeColor}` : red}
+                  hasEndDot
+                >
+                  <span>{getHHMM(leg.startTime)}</span>
+                  <span>{getHHMM(leg.endTime)}</span>
+                </ItemLine>
+                {leg.mode !== "WALK" && `${leg.from.name}`}
+                <div
+                  style={{
+                    color: leg.routeColor ? `#${leg.routeColor}` : black
+                  }}
+                >
+                  <div>
+                    <ModeIcon mode={leg.mode} size="2x" />
+                    {leg.agencyId && (
+                      <React.Fragment>
+                        &nbsp;
+                        <span className="tag is-light is-medium">
+                          {leg.agencyId}
+                        </span>
+                      </React.Fragment>
+                    )}
                   </div>
-                  {leg.mode === "BUS" && (
-                    <ItemPrice>
-                      <span className="tag is-warning">BUY TICKET SOON</span>
-                      {/* <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
+                  <div>
+                    {leg.route}
+                    {leg.headsign && (
+                      <React.Fragment>&nbsp;→ {leg.headsign}</React.Fragment>
+                    )}
+                  </div>
+                  {sec2min(leg.duration)} minutes
+                </div>
+                {leg.mode === "BUS" && (
+                  <ItemPrice>
+                    <span className="tag is-warning">BUY TICKET SOON</span>
+                    {/* <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
                       &nbsp; 15 THB */}
-                    </ItemPrice>
-                  )}
-                  {leg.mode !== 'WALK' && `${leg.to.name}`}
-                </Item>
-              ))}
+                  </ItemPrice>
+                )}
+                {leg.mode !== "WALK" && `${leg.to.name}`}
+              </Item>
+            ))}
           </Timeline>
         </Card>
       )}

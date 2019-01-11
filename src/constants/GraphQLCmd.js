@@ -69,6 +69,22 @@ export const ROUTEPLAN_QUERY = gql`
         waitingTime
         walkingDistance
         transfers
+        fare {
+          details {
+            regular {
+              fareId
+              routes
+              price {
+                cents
+                currency {
+                  currency
+                  defaultFractionDigits
+                  currencyCode
+                }
+              }
+            }
+          }
+        }
         legs {
           startTime
           endTime
