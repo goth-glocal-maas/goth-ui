@@ -78,10 +78,17 @@ export const ROUTEPLAN_QUERY = gql`
           from {
             lat
             lon
+            name
+            stopId
+            stopSequence
+
           }
           to {
             lat
             lon
+            name
+            stopId
+            stopSequence
           }
           pathway
           departureDelay

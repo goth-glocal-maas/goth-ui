@@ -135,6 +135,7 @@ const ItineraryDirection = props => {
                     <span>{getHHMM(leg.startTime)}</span>
                     <span>{getHHMM(leg.endTime)}</span>
                   </ItemLine>
+                      {leg.mode !== 'WALK' && `${leg.from.name}`}
                   <div
                     style={{
                       color: leg.routeColor ? `#${leg.routeColor}` : black
@@ -158,6 +159,7 @@ const ItineraryDirection = props => {
                       )}
                     </div>
                     {sec2min(leg.duration)} minutes
+
                   </div>
                   {leg.mode === "BUS" && (
                     <ItemPrice>
@@ -166,6 +168,7 @@ const ItineraryDirection = props => {
                       &nbsp; 15 THB */}
                     </ItemPrice>
                   )}
+                  {leg.mode !== 'WALK' && `${leg.to.name}`}
                 </Item>
               ))}
           </Timeline>
