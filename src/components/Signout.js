@@ -17,9 +17,9 @@ const Signout = props => (
     mutation={SIGN_OUT_MUTATION}
     refetchQueries={[{ query: CURRENT_USER_QUERY }]}
   >
-    {signout => <a onClick={signout}>
+    {signout => <button onClick={signout}>
       <FontAwesomeIcon icon="sign-out-alt" />
-      </a>}
+      </button>}
   </Mutation>
 )
 export default Signout

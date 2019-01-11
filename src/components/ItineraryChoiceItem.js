@@ -6,7 +6,7 @@ import { Subscribe } from "unstated"
 import { black } from "../constants/color"
 import PlanContainer from "../unstated/plan"
 import ItineraryStep from "./parts/ItineraryStep"
-import { add, getHH, getHHMM } from "../utils/fn"
+import { add } from "../utils/fn"
 
 const ItineraryChoiceItem = styled.div`
   background: #fff;
@@ -90,8 +90,6 @@ const ChioceItem = props => {
     farePrice = totalFare / fraction
   }
   const durationMin = (endTime - startTime) / 60 / 1000
-  // TODO: DEAL with trip for the next day
-  if (durationMin > 300) return <React.Fragment />
   const percentPerSec = 100 / (maxEndTime - minStartTime)
   const maxPercent =
     maxEndTime === endTime

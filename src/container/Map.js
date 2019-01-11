@@ -65,14 +65,12 @@ const StyledUL = styled.ul`
   display: flex;
   flex-direction: row;
   font-size: 1.3rem;
+  padding-top: 5px;
 
-  li {
-    display: block;
+  button {
     width: 10rem;
-  }
-
-  li a {
-    width: 100%;
+    font-size: 1.3rem;
+    margin: 0px 5px;
   }
 `
 
@@ -326,22 +324,25 @@ class Map extends Component {
           </PopupCloseButton>
           {popupInfo.id && <StopSign stopId={popupInfo.id} />}
           <StyledUL>
-            <li
+            <button
               onClick={() => {
                 this.setState({ popupInfo: null })
                 plan.setFrom([popupInfo.lat, popupInfo.lon])
               }}
+              className="button is-warning"
             >
-              <a>From here</a>
-            </li>
-            <li
+              From here
+            </button>
+
+            <button
               onClick={() => {
                 this.setState({ popupInfo: null })
                 plan.setTo([popupInfo.lat, popupInfo.lon])
               }}
+              className="button is-warning"
             >
-              <a>To here</a>
-            </li>
+              To here
+            </button>
           </StyledUL>
         </Popup>
       )

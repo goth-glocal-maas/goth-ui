@@ -16,11 +16,19 @@ export const getCurrentTimeForPlan = tmsp => {
   }
 }
 
+const getDD = tmsp => moment(tmsp).tz("Asia/Bangkok").format('DD')
+
 export const getGoodTrips = (ities, mode = 0) => {
   // NOTE: filter out any transit trip longer than 300 min;
   //       it's not possible in Phuket anyway
   if (mode !== 0) return ities
-  return ities.filter(i => (i.endTime - i.startTime) / 60 / 1000 < 301)
+  // no choice, no filter
+  if (ities.length < 2) return ities
+  // no next day trip since it would ruin the timeline on <ItineraryStep />
+  const day = getDD(ities[0].startTime)
+  return ities
+    .filter(i => (day === getDD(i.startTime)))
+    .filter(i => (i.endTime - i.startTime) / 60 / 1000 < 301)
 }
 
 export const getHHMM = tmsp => {

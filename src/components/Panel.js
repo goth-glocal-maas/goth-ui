@@ -285,9 +285,12 @@ class Panel extends Component {
                     {pickedTrip && (
                       <Fragment>
                         <MutedHeader>
-                          <a onClick={() => plan.setPickedItinerary(-1)}>
+                          <button
+                            className="button"
+                            onClick={() => plan.setPickedItinerary(-1)}
+                          >
                             back
-                          </a>
+                          </button>
                         </MutedHeader>
                         <ItineraryDirection trip={pickedTrip} />
                       </Fragment>
@@ -298,7 +301,7 @@ class Panel extends Component {
                   v.{version}.{date}
                   &nbsp;&nbsp;
                   <a href="javascript:location.reload(true)">
-                      <FontAwesomeIcon icon="sync" size="sm" />
+                    <FontAwesomeIcon icon="sync" size="sm" />
                   </a>
                 </Footer>
               </BoxContent>
