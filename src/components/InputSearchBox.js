@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Subscribe } from "unstated"
 import { Query } from "react-apollo"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ReactGA from "react-ga"
 
 import PlanContainer from "../unstated/plan"
 import { POI_SEARCH_QUERY } from "../constants/GraphQLCmd"
@@ -52,7 +53,12 @@ class InputSearchBox extends Component {
 
   componentDidMount() {
     const { plan, destination } = this.props
-    console.log(destination, plan.state[destination])
+    ReactGA.pageview(`/search/${destination}`)
+
+    const label = plan.state[`${destination}Label`]
+    if (label) {
+      this.setState({query: label})
+    }
   }
 
   focusTextInput() {
@@ -85,6 +91,11 @@ class InputSearchBox extends Component {
     } else {
       plan.setToItem({ to: coordinates.reverse(), toLabel: label })
     }
+    ReactGA.event({
+      category: 'Search',
+      action: `set ${destination}`,
+      label: label
+    });
     this.goBack()
   }
 
@@ -151,6 +162,7 @@ class InputSearchBox extends Component {
           type="text"
           ref={this.textInput}
           onChange={this.handleInputChange.bind(this)}
+          defaultValue={this.state.query}
           placeholder="Search a place"
         />
 

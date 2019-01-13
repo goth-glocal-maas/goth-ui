@@ -9,7 +9,7 @@ import { ApolloProvider } from "react-apollo"
 import { Provider as UNSTATEDProvider } from "unstated"
 import UNSTATED from "unstated-debug"
 import { ToastContainer, Slide } from "react-toastify"
-
+import ReactGA from "react-ga"
 import "react-toastify/dist/ReactToastify.css"
 
 import { defaults, resolvers } from "./resolvers"
@@ -26,6 +26,7 @@ export const client = new ApolloClient({
 })
 
 UNSTATED.logStateChanges = false
+ReactGA.initialize("UA-34877059-7")
 
 ReactDOM.render(
   <UNSTATEDProvider>

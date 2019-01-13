@@ -1,12 +1,16 @@
-import React from "react"
+import React, { Component } from "react"
 import styled from "styled-components"
 import { Subscribe } from "unstated"
+import ReactGA from "react-ga"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import PlanContainer from "../unstated/plan"
 import ModeIcon from "./parts/ModeIcon"
 import { red, gray, black } from "../constants/color"
 import { getHHMM, sec2min } from "../utils/fn"
 
+
+// TODO: Fix overflow problem, no scroll..
 const Card = styled.div`
   background: #fff;
   box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.2);
@@ -115,62 +119,78 @@ const ItemLine = styled.span`
 
 const ItemPrice = styled.div``
 
-const ItineraryDirection = props => {
-  const { trip } = props
-  return (
-    <Subscribe to={[PlanContainer]}>
-      {plan => (
-        <Card>
-          <Timeline>
-            {trip.legs.map((leg, index) => (
-              <Item key={`picked-trip-item-${index}`}>
-                <ItemLine
-                  color={leg.routeColor ? `#${leg.routeColor}` : red}
-                  hasEndDot
-                >
-                  <span>{getHHMM(leg.startTime)}</span>
-                  <span>{getHHMM(leg.endTime)}</span>
-                </ItemLine>
-                {leg.mode !== "WALK" && `${leg.from.name}`}
-                <div
-                  style={{
-                    color: leg.routeColor ? `#${leg.routeColor}` : black
-                  }}
-                >
-                  <div>
-                    <ModeIcon mode={leg.mode} size="2x" />
-                    {leg.agencyId && (
-                      <React.Fragment>
-                        &nbsp;
-                        <span className="tag is-light is-medium">
-                          {leg.agencyId}
-                        </span>
-                      </React.Fragment>
-                    )}
-                  </div>
-                  <div>
-                    {leg.route}
-                    {leg.headsign && (
-                      <React.Fragment>&nbsp;→ {leg.headsign}</React.Fragment>
-                    )}
-                  </div>
-                  {sec2min(leg.duration)} minutes
-                </div>
-                {leg.mode === "BUS" && (
-                  <ItemPrice>
-                    <span className="tag is-warning">BUY TICKET SOON</span>
-                    {/* <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
-                      &nbsp; 15 THB */}
-                  </ItemPrice>
-                )}
-                {leg.mode !== "WALK" && `${leg.to.name}`}
-              </Item>
-            ))}
-          </Timeline>
-        </Card>
-      )}
-    </Subscribe>
+class ItineraryDirection extends Component {
+  componentDidMount() {
+    ReactGA.event({
+      category: "Transport",
+      action: "view direction"
+    })
+  }
+
+  renderStop = stop => (
+    <div>
+      <FontAwesomeIcon icon="map-marker-alt" size="1x" /> {stop}
+    </div>
   )
+
+  render() {
+    const { trip } = this.props
+
+    return (
+      <Subscribe to={[PlanContainer]}>
+        {plan => (
+          <Card>
+            <Timeline>
+              {trip.legs.map((leg, index) => (
+                <Item key={`picked-trip-item-${index}`}>
+                  <ItemLine
+                    color={leg.routeColor ? `#${leg.routeColor}` : red}
+                    hasEndDot
+                  >
+                    <span>{getHHMM(leg.startTime)}</span>
+                    <span>{getHHMM(leg.endTime)}</span>
+                  </ItemLine>
+                  {leg.mode !== "WALK" && this.renderStop(`${leg.from.name}`)}
+                  <div
+                    style={{
+                      color: leg.routeColor ? `#${leg.routeColor}` : black
+                    }}
+                  >
+                    <div>
+                      <ModeIcon mode={leg.mode} size="2x" />
+                      {leg.agencyId && (
+                        <React.Fragment>
+                          &nbsp;
+                          <span className="tag is-light is-medium">
+                            {leg.agencyId}
+                          </span>
+                        </React.Fragment>
+                      )}
+                    </div>
+                    <div>
+                      {leg.route}
+                      {leg.headsign && (
+                        <React.Fragment>&nbsp;→ {leg.headsign}</React.Fragment>
+                      )}
+                    </div>
+                    {sec2min(leg.duration)} minutes
+                  </div>
+                  {leg.mode === "BUS" && (
+                    <ItemPrice>
+                      <span className="tag is-warning">BUY TICKET SOON</span>
+                      {/* <FontAwesomeIcon icon={["far", "money-bill-alt"]} />
+                        &nbsp; 15 THB */}
+                    </ItemPrice>
+                  )}
+                  {leg.mode !== "WALK" && this.renderStop(`${leg.to.name}`)}
+                </Item>
+              ))}
+            </Timeline>
+          </Card>
+        )}
+      </Subscribe>
+    )
+  }
 }
 
 export default ItineraryDirection

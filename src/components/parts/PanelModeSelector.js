@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ReactGA from "react-ga"
 
 import { yellow } from "../../constants/color"
 import { TRANSPORT_MODES } from "../../constants/mode"
@@ -45,7 +46,15 @@ const PanelModeSelector = props => (
         <div className="control" key={`mode-sel-${mode}`}>
           <div className="tags has-addons">
             <button
-              onClick={() => props.setMode(i)}
+              onClick={() => {
+                ReactGA.event({
+                  category: "Transport",
+                  action: "set mode",
+                  value: i,
+                  label: mode
+                })
+                props.setMode(i)
+              }}
               className={`tag ${
                 i === +props.mode ? "is-selected" : "is-white"
               }`}
@@ -61,7 +70,7 @@ const PanelModeSelector = props => (
       <TagWithAddon className="tags has-addons">
         <FontAwesomeIcon icon={["far", "clock"]} size="2x" />
         <TimePicker
-          changeTime={(timeDelta) => {
+          changeTime={timeDelta => {
             props.setTime(timeDelta)
           }}
           initHours={getHH(props.timestamp)}

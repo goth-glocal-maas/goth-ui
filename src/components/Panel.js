@@ -5,6 +5,7 @@ import { Subscribe } from "unstated"
 import _ from "lodash"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
+import ReactGA from "react-ga"
 
 import PlanContainer from "../unstated/plan"
 import { yellow, black, grayBackground, darkmagenta } from "../constants/color"
@@ -152,8 +153,10 @@ class Panel extends Component {
           : +_tmsp
       const nUrl = `/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`
       const currUrl = `${pathname}${search}`
-      if (currUrl !== nUrl)
-        history.push(`/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`)
+      if (currUrl !== nUrl) {
+        history.push(nUrl)
+        ReactGA.pageview(nUrl)
+      }
     }
   }
 
