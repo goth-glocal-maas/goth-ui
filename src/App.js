@@ -18,7 +18,8 @@ import {
   faEllipsisV,
   faExclamationTriangle,
   faSignInAlt,
-  faSignOutAlt
+  faSignOutAlt,
+  faMapMarkedAlt
 } from "@fortawesome/free-solid-svg-icons"
 import {
   faClock as farFaClock,
@@ -45,6 +46,7 @@ library.add(faEllipsisV)
 library.add(faExclamationTriangle)
 library.add(faSignInAlt)
 library.add(faSignOutAlt)
+library.add(faMapMarkedAlt)
 
 library.add(faDotCircle)
 library.add(farFaClock)

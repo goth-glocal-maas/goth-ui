@@ -1,5 +1,31 @@
 import gql from "graphql-tag"
 
+export const POI_SEARCH_QUERY = gql`
+  query POI_SEARCH(
+    $text: String!
+    $lat: Float
+    $lon: Float
+    $province: String
+  ) {
+    poi_search(text: $text, lat: $lat, lon: $lon, province: $province) {
+      type
+      geometry {
+        coordinates
+      }
+      properties {
+        name
+        label
+        confidence
+        layer
+        source
+        source_id
+        distance
+        accuracy
+      }
+    }
+  }
+`
+
 export const AVAILABLE_STOPS_QUERY = gql`
   query STOPS(
     $minLat: Float!
@@ -97,7 +123,6 @@ export const ROUTEPLAN_QUERY = gql`
             name
             stopId
             stopSequence
-
           }
           to {
             lat

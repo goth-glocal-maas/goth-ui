@@ -60,6 +60,11 @@ const ButtonContainer = styled.button`
   }
 `
 
+const latLon2txt = latlon =>
+  latlon && latlon.length === 2
+    ? `${latlon[0].toFixed(6)},${latlon[1].toFixed(6)}`
+    : ""
+
 class ODInput extends Component {
   handleSwitchOD() {
     const { origin, destination } = this.props
@@ -88,7 +93,12 @@ class ODInput extends Component {
       <ODBox>
         <ODInputBox>
           <ButtonContainer onClick={this.goToSearch.bind(this, "from")}>
-            <input type="text" value={origin} placeholder="Origin" />
+            <input
+              type="text"
+              value={originLabel || latLon2txt(origin)}
+              placeholder="Origin"
+              readOnly
+            />
           </ButtonContainer>
           <ODButtonBox
             visible={true}
@@ -102,7 +112,12 @@ class ODInput extends Component {
         </ODInputBox>
         <ODInputBox>
           <ButtonContainer onClick={this.goToSearch.bind(this, "to")}>
-            <input type="text" value={destination} placeholder="Destination" />
+            <input
+              type="text"
+              value={destinationLabel || latLon2txt(destination)}
+              placeholder="Destination"
+              readOnly
+            />
           </ButtonContainer>
           <ODButtonBox
             visible={oneFilled}

@@ -1,7 +1,7 @@
 {
   "name": "goth-webapp",
-  "version": "0.7.2",
-  "date": "2019-01-11",
+  "version": "0.8.0",
+  "date": "2019-01-14",
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",

@@ -132,7 +132,7 @@ class Panel extends Component {
       return
     }
 
-    const { from, to, mode } = nextProps.plan.state
+    const { from, to, mode, timestamp } = nextProps.plan.state
     const hasData = from.length > 0 && to.length > 0
     const _from = from.join(",")
     const _to = to.join(",")
@@ -142,9 +142,14 @@ class Panel extends Component {
       (params.from !== _from ||
         params.to !== _to ||
         +params.mode !== +mode ||
-        +params.timestamp !== +_tmsp)
+        +timestamp !== +_tmsp)
     ) {
-      const newTimestamp = _tmsp === undefined ? new Date().getTime() : +_tmsp
+      const newTimestamp =
+        timestamp !== -1
+          ? timestamp
+          : _tmsp === undefined
+          ? new Date().getTime()
+          : +_tmsp
       const nUrl = `/p/${_from}/${_to}/${mode}?ts=${newTimestamp}`
       const currUrl = `${pathname}${search}`
       if (currUrl !== nUrl)
@@ -181,7 +186,16 @@ class Panel extends Component {
       plan
     } = this.props
 
-    const { from, to, mode, timestamp, hash, picked } = plan.state
+    const {
+      from,
+      fromLabel,
+      to,
+      toLabel,
+      mode,
+      timestamp,
+      hash,
+      picked
+    } = plan.state
     let md = mode
 
     const tmsp = timestamp > 0 ? timestamp : this.state.initTmsp
@@ -190,7 +204,7 @@ class Panel extends Component {
       return (
         <Box>
           <BoxContent>
-            <InputSearchBox {...this.props} />
+            <InputSearchBox {...this.props} destination={params.destination} />
           </BoxContent>
         </Box>
       )
@@ -251,7 +265,9 @@ class Panel extends Component {
                     <ODInput
                       history={this.props.history}
                       origin={from}
+                      originLabel={fromLabel}
                       destination={to}
+                      destinationLabel={toLabel}
                       switchOD={() => plan.switchOD()}
                     />
                     <PanelModeSelector

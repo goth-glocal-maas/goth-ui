@@ -5,7 +5,9 @@ import moment from "moment-timezone"
 class PlanContainer extends Container {
   state = {
     from: [], // latlon
+    fromLabel: "",
     to: [], // latlon
+    toLabel: "",
     timestamp: -1,
     picked: -1,
     itineraries: [],
@@ -39,15 +41,28 @@ class PlanContainer extends Container {
   }
 
   switchOD = () => {
-    this.setState({ from: this.state.to, to: this.state.from })
+    this.setState({
+      from: this.state.to,
+      fromLabel: this.state.toLabel,
+      to: this.state.from,
+      toLabel: this.state.fromLabel
+    })
   }
 
   setFrom = from => {
-    this.setState({ from, itineraries: [] })
+    this.setState({ from, fromLabel: "", itineraries: [] })
+  }
+
+  setFromItem = ({ from, fromLabel }) => {
+    this.setState({ from, fromLabel, itineraries: [] })
   }
 
   setTo = to => {
-    this.setState({ to, itineraries: [] })
+    this.setState({ to, toLabel: "", itineraries: [] })
+  }
+
+  setToItem = ({ to, toLabel }) => {
+    this.setState({ to, toLabel, itineraries: [] })
   }
 
   setMode = mode => {
