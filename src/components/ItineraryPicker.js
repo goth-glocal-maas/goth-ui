@@ -56,8 +56,6 @@ export default class ItineraryPicker extends Component {
   }
 
   async handleUnstatedPlan(unstatedContainer, value) {
-    console.log(unstatedContainer, value)
-    console.log(unstatedContainer.setItineraries)
     await unstatedContainer.setItineraries(value)
     return true
   }

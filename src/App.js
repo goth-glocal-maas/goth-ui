@@ -53,6 +53,7 @@ library.add(farFaMoneyBillAlt)
 const App = () => (
   <Switch>
     <Route path={`/login`} component={SignupPage} />
+    <Route path={`/search/:destination`} component={Map} />
     <Route path={`/p/:from/:to/:mode`} component={Map} />
     <Route path={`/p/:from/:to`} component={Map} />
     <Route path="/" component={Map} />

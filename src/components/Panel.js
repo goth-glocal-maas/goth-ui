@@ -7,13 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
 
 import PlanContainer from "../unstated/plan"
-import {
-  yellow,
-  black,
-  grayBackground,
-  darkmagenta,
-  gray
-} from "../constants/color"
+import { yellow, black, grayBackground, darkmagenta } from "../constants/color"
 import ODInput from "./ODInput"
 import ItineraryChoiceItem from "./ItineraryChoiceItem"
 import ItineraryDirection from "./ItineraryDirection"
@@ -23,7 +17,8 @@ import { getCurrentTimeForPlan, getGoodTrips } from "../utils/fn"
 import { TRANSPORT_MODES } from "../constants/mode"
 import User from "./User"
 import Signout from "./Signout"
-import { version, date } from "../../package.json"
+import Footer from "./Footer"
+import InputSearchBox from "./InputSearchBox"
 
 const Box = styled.div`
   width: 100%;
@@ -76,15 +71,6 @@ const MutedHeader = styled.p`
 
 const BoxScrollOffset = styled.div`
   padding-right: 1rem;
-`
-
-const Footer = styled.span`
-  font-size: 1.2rem;
-  color: ${gray};
-
-  a {
-    color: ${gray};
-  }
 `
 
 const EmptyDiv = styled.div`
@@ -141,6 +127,11 @@ class Panel extends Component {
       location: { pathname, search },
       match: { params }
     } = nextProps
+    /* if it's `/search/:destination`, don't do anything */
+    if (params.destination && ["from", "to"].indexOf(params.destination) > -1) {
+      return
+    }
+
     const { from, to, mode } = nextProps.plan.state
     const hasData = from.length > 0 && to.length > 0
     const _from = from.join(",")
@@ -195,6 +186,16 @@ class Panel extends Component {
 
     const tmsp = timestamp > 0 ? timestamp : this.state.initTmsp
 
+    if (params.destination && ["from", "to"].indexOf(params.destination) > -1) {
+      return (
+        <Box>
+          <BoxContent>
+            <InputSearchBox {...this.props} />
+          </BoxContent>
+        </Box>
+      )
+    }
+
     if (params.from && params.to && from.length === 0 && to.length === 0) {
       return <p>Loading...</p>
     }
@@ -248,6 +249,7 @@ class Panel extends Component {
                 {!pickedTrip && (
                   <Fragment>
                     <ODInput
+                      history={this.props.history}
                       origin={from}
                       destination={to}
                       switchOD={() => plan.switchOD()}
@@ -297,13 +299,7 @@ class Panel extends Component {
                     )}
                   </BoxScrollOffset>
                 )}
-                <Footer>
-                  v.{version}.{date}
-                  &nbsp;&nbsp;
-                  <a href="javascript:location.reload(true)">
-                    <FontAwesomeIcon icon="sync" size="sm" />
-                  </a>
-                </Footer>
+                <Footer />
               </BoxContent>
             </Box>
           )
